@@ -9,29 +9,30 @@ import MapViewer from './components/MapViewer';
 import ReportModal from './components/ReportModal';
 import { Layers, Search, Target, Cpu, BarChart3, PanelLeftOpen } from 'lucide-react';
 import { SUMMARY_STATS_NS, RIZAB_MELAYU_NS, HUTAN_SIMPAN_NS, RIZAB_ORANG_ASLI_NS } from './data/negeriSembilanData';
-import { SEREMBAN_LAYERS_CONFIG } from './utils/serembanLoader';
+import { 
+  ALL_LAYERS_CONFIG, 
+  SEREMBAN_LAYERS_CONFIG, 
+  JEMPOL_LAYERS_CONFIG,
+  PD_LAYERS_CONFIG,
+  REMBAU_LAYERS_CONFIG,
+  TAMPIN_LAYERS_CONFIG,
+  DAERAH_CENTROIDS 
+} from './utils/daerahLoader';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('layers');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [selectedDaerah, setSelectedDaerah] = useState('all'); // 'all', 'seremban', 'jempol', 'pd', 'rembau', 'tampin'
 
-  // Initialize Seremban layer states
-  const initialLayers = SEREMBAN_LAYERS_CONFIG.reduce((acc, cfg) => {
-    acc[cfg.id] = cfg.defaultEnabled;
+  // Initialize layer states: all layers toggled OFF by default on load
+  const initialLayers = ALL_LAYERS_CONFIG.reduce((acc, cfg) => {
+    acc[cfg.id] = false;
     return acc;
-  }, {
-    rizabMelayu: true,
-    hutanSimpan: true,
-    orangAsli: true
-  });
+  }, {});
 
   const [layers, setLayers] = useState(initialLayers);
   const [opacity, setOpacity] = useState(0.5);
-  const [selectedLocation, setSelectedLocation] = useState({
-    center: [2.7247, 101.9378], // Center on Seremban
-    zoom: 12,
-    label: 'Daerah Seremban'
-  });
+  const [selectedLocation, setSelectedLocation] = useState(DAERAH_CENTROIDS.all);
   const [clickedCoords, setClickedCoords] = useState(null);
   const [bufferData, setBufferData] = useState(null);
   const [customImportedData, setCustomImportedData] = useState(null);
@@ -131,8 +132,62 @@ export default function App() {
     pembatalanLama: 16,
     transitionLot: 7,
     transitionBdyPolyline: 16921,
-    ndcdbLotRegion: '40,000+',
-    ndcdbBdyPolyline: '100,000+'
+    ndcdbLotRegion: '1,772',
+    ndcdbBdyPolyline: '16,921'
+  };
+
+  const jempolStats = {
+    daerahJempol: 1,
+    malayResJempol: 45,
+    malayResB: 24,
+    forestResJempol: 49,
+    aborigineResJempol: 18,
+    wartaLotJempol: 955,
+    ndcdbLotJempol: '62,516',
+    pembatalanTrmJempol: 8,
+    trmGantianLama: 5,
+    trmLamaJempol: 4
+  };
+
+  const pdStats = {
+    daerahPd: 1,
+    malayResPd: 15,
+    forestResPd: 34,
+    aborigineResPd: 1,
+    wartaLotPd: 569,
+    ndcdbLotPd: '64,565',
+    ndcdbBdyPd: '229,933',
+    pembatalanPd: 7,
+    rizabMelayuLamaPd: 17
+  };
+
+  const rembauStats = {
+    daerahRembau: 1,
+    malayResRembau: 27,
+    forestResRembau: 34,
+    aborigineResRembau: 3,
+    wartaLotRembau: 331,
+    ndcdbLotRembau: '39,490',
+    pembatalanRembau: 14,
+    seksyenRembau: 2
+  };
+
+  const tampinStats = {
+    daerahTampin: 1,
+    malayResTampin: 18,
+    forestResTampin: 45,
+    aborigineResTampin: 2,
+    wartaLotTampin: 622,
+    ndcdbLotTampin: '49,413',
+    pembatalanTampin: 8,
+    penggantianTampin: 1,
+    seksyenTampin: 2
+  };
+
+  const handleSelectDaerah = (daerahId) => {
+    setSelectedDaerah(daerahId);
+    const targetLoc = DAERAH_CENTROIDS[daerahId] || DAERAH_CENTROIDS.all;
+    setSelectedLocation(targetLoc);
   };
 
   return (
@@ -142,6 +197,8 @@ export default function App() {
         onOpenReportModal={() => setShowReportModal(true)}
         isSidebarOpen={isSidebarOpen}
         setIsSidebarOpen={setIsSidebarOpen}
+        selectedDaerah={selectedDaerah}
+        onSelectDaerah={handleSelectDaerah}
       />
 
       <div className="app-container">
@@ -189,6 +246,12 @@ export default function App() {
                 setOpacity={setOpacity}
                 stats={SUMMARY_STATS_NS}
                 serembanStats={serembanStats}
+                jempolStats={jempolStats}
+                pdStats={pdStats}
+                rembauStats={rembauStats}
+                tampinStats={tampinStats}
+                selectedDaerah={selectedDaerah}
+                onSelectDaerah={handleSelectDaerah}
               />
             )}
 
@@ -239,6 +302,7 @@ export default function App() {
             bufferData={bufferData}
             customImportedData={customImportedData}
             isSidebarOpen={isSidebarOpen}
+            selectedDaerah={selectedDaerah}
           />
         </main>
       </div>

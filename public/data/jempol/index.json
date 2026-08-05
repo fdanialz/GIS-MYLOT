@@ -1,0 +1,82 @@
+[
+  {
+    "key": "daerahJempol",
+    "name": "Sempadan Daerah Jempol",
+    "file": "JEMPOL_region.json",
+    "featureCount": 1,
+    "sizeMb": 0.05,
+    "geomType": "Polygon"
+  },
+  {
+    "key": "malayResJempol",
+    "name": "Warta Rizab Melayu Jempol (Kawasan A)",
+    "file": "JEMPOL TRM BARU A_region.json",
+    "featureCount": 45,
+    "sizeMb": 0.13,
+    "geomType": "MultiPolygon"
+  },
+  {
+    "key": "malayResB",
+    "name": "Warta Rizab Melayu Jempol (Kawasan B)",
+    "file": "JEMPOL TRM BARU B_region.json",
+    "featureCount": 24,
+    "sizeMb": 0.04,
+    "geomType": "Polygon"
+  },
+  {
+    "key": "forestResJempol",
+    "name": "Hutan Simpan Kekal Jempol",
+    "file": "JEMPOL RIZAB HUTAN_region.json",
+    "featureCount": 49,
+    "sizeMb": 0.22,
+    "geomType": "Polygon"
+  },
+  {
+    "key": "aborigineResJempol",
+    "name": "Rizab Orang Asli Jempol",
+    "file": "JEMPOL RIZAB ORANG ASLI_region.json",
+    "featureCount": 18,
+    "sizeMb": 0.04,
+    "geomType": "Polygon"
+  },
+  {
+    "key": "wartaLotJempol",
+    "name": "Warta Lot Jempol",
+    "file": "JEMPOL WARTA_region.json",
+    "featureCount": 955,
+    "sizeMb": 2,
+    "geomType": "Polygon"
+  },
+  {
+    "key": "ndcdbLotJempol",
+    "name": "Lot Kadaster NDCDB Jempol",
+    "file": "JEMPOL NDCDB BARU_region.json",
+    "featureCount": 62516,
+    "sizeMb": 17.17,
+    "geomType": "Polygon"
+  },
+  {
+    "key": "pembatalanTrmJempol",
+    "name": "Warta Pembatalan Rizab Melayu Jempol",
+    "file": "JEMPOL PEMBATALAN TRM BARU_region.json",
+    "featureCount": 8,
+    "sizeMb": 0.01,
+    "geomType": "Polygon"
+  },
+  {
+    "key": "trmGantianLama",
+    "name": "Rizab Melayu Gantian Lama Jempol",
+    "file": "JEMPOL TRM GANTIAN LAMA_region.json",
+    "featureCount": 5,
+    "sizeMb": 0.01,
+    "geomType": "Polygon"
+  },
+  {
+    "key": "trmLamaJempol",
+    "name": "Rizab Melayu Rekod Terdahulu Jempol",
+    "file": "JEMPOL TRM LAMA_region.json",
+    "featureCount": 4,
+    "sizeMb": 0.03,
+    "geomType": "Polygon"
+  }
+]

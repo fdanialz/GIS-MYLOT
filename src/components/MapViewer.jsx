@@ -4,7 +4,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { ExternalLink, MapPin, Maximize, Minimize, Info } from 'lucide-react';
 import { NEGERI_SEMBILAN_BOUNDS } from '../data/negeriSembilanData';
-import { SEREMBAN_LAYERS_CONFIG, fetchSerembanLayerData } from '../utils/serembanLoader';
+import { ALL_LAYERS_CONFIG, fetchDaerahLayerData } from '../utils/daerahLoader';
 import { getGoogleMapsUrl, getGoogleStreetViewUrl } from '../utils/spatialUtils';
 
 // Fix default Leaflet icon marker bug
@@ -69,12 +69,12 @@ export default function MapViewer({
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
 
-  // Fetch GeoJSON for enabled layers
+  // Fetch GeoJSON for enabled layers across all Daerah
   useEffect(() => {
-    SEREMBAN_LAYERS_CONFIG.forEach(cfg => {
+    ALL_LAYERS_CONFIG.forEach(cfg => {
       if (layers[cfg.id] && !serembanGeoData[cfg.id] && !loadingState[cfg.id]) {
         setLoadingState(prev => ({ ...prev, [cfg.id]: true }));
-        fetchSerembanLayerData(cfg.file).then(data => {
+        fetchDaerahLayerData(cfg.daerah || 'seremban', cfg.file).then(data => {
           if (data) {
             setSerembanGeoData(prev => ({ ...prev, [cfg.id]: data }));
           }
@@ -288,8 +288,8 @@ export default function MapViewer({
           </Circle>
         )}
 
-        {/* RENDER SEREMBAN SHP DYNAMIC LAYERS */}
-        {SEREMBAN_LAYERS_CONFIG.map(cfg => {
+        {/* RENDER DYNAMIC SHP LAYERS (SEREMBAN & JEMPOL) */}
+        {ALL_LAYERS_CONFIG.map(cfg => {
           if (!layers[cfg.id]) return null;
           const geojson = serembanGeoData[cfg.id];
           if (!geojson || !geojson.features) return null;
@@ -302,7 +302,7 @@ export default function MapViewer({
             const p = f.properties || {};
 
             // Common properties display format
-            const popupTitle = p.KETERANGAN || p.TUJUAN_WAR || p.NAMA_WARTA || p.Nama_SRM || p.LOT_NAMA || `${cfg.name} #${idx + 1}`;
+            const popupTitle = p.LOT_NO || p.KETERANGAN || p.TUJUAN_WAR || p.NAMA_WARTA || p.Nama_SRM || p.LOT_NAMA || p.UPI || `${cfg.name} #${idx + 1}`;
 
             if (geomType === 'Polygon' || geomType === 'MultiPolygon') {
               return (
@@ -323,9 +323,33 @@ export default function MapViewer({
                       </div>
                       <div className="popup-grid">
                         <div>
-                          <div className="popup-label">Lapisan SHP</div>
+                          <div className="popup-label">Lapisan Spasial</div>
                           <div className="popup-val" style={{ color: cfg.color }}>{cfg.name}</div>
                         </div>
+                        {p.MUKIM && (
+                          <div>
+                            <div className="popup-label">Mukim / Daerah</div>
+                            <div className="popup-val">{p.MUKIM}, {p.DAERAH || 'Seremban'}</div>
+                          </div>
+                        )}
+                        {p.UPI && (
+                          <div>
+                            <div className="popup-label">UPI (Unique Parcel ID)</div>
+                            <div className="popup-val" style={{ fontFamily: 'monospace', color: '#60a5fa' }}>{p.UPI}</div>
+                          </div>
+                        )}
+                        {p.STATUS && (
+                          <div>
+                            <div className="popup-label">Status Lot</div>
+                            <div className="popup-val">{p.STATUS}</div>
+                          </div>
+                        )}
+                        {p.KEGUNAAN && (
+                          <div>
+                            <div className="popup-label">Kegunaan Tanah</div>
+                            <div className="popup-val">{p.KEGUNAAN}</div>
+                          </div>
+                        )}
                         {p.NOWARTA && (
                           <div>
                             <div className="popup-label">No. Warta</div>
@@ -341,21 +365,21 @@ export default function MapViewer({
                         {p.KELUASAN !== undefined && (
                           <div>
                             <div className="popup-label">Keluasan</div>
-                            <div className="popup-val" style={{ color: '#f59e0b' }}>
+                            <div className="popup-val" style={{ color: '#f59e0b', fontWeight: 'bold' }}>
                               {typeof p.KELUASAN === 'number' ? p.KELUASAN.toLocaleString() : p.KELUASAN} m²
                             </div>
+                          </div>
+                        )}
+                        {p.TARIKH_UKUR && (
+                          <div>
+                            <div className="popup-label">Tarikh Ukur</div>
+                            <div className="popup-val">{p.TARIKH_UKUR}</div>
                           </div>
                         )}
                         {p.NOFAILUKUR && (
                           <div>
                             <div className="popup-label">No. Fail Ukur</div>
                             <div className="popup-val">{p.NOFAILUKUR}</div>
-                          </div>
-                        )}
-                        {p.NAMA_AGENS && (
-                          <div>
-                            <div className="popup-label">Agensi / Pemohon</div>
-                            <div className="popup-val">{p.NAMA_AGENS}</div>
                           </div>
                         )}
                       </div>
@@ -386,8 +410,52 @@ export default function MapViewer({
                 <Polyline
                   key={`${cfg.id}-${idx}`}
                   positions={positions}
-                  pathOptions={{ color: cfg.color, weight: 2 }}
-                />
+                  pathOptions={{ color: cfg.color, weight: 2.5, opacity: 0.85 }}
+                >
+                  <Popup>
+                    <div className="popup-card">
+                      <div className="popup-header" style={{ color: cfg.color }}>
+                        <Info size={16} /> Garisan Sempadan NDCDB
+                      </div>
+                      <div className="popup-grid">
+                        <div>
+                          <div className="popup-label">Lapisan Spasial</div>
+                          <div className="popup-val" style={{ color: cfg.color }}>{cfg.name}</div>
+                        </div>
+                        {p.UPI && (
+                          <div>
+                            <div className="popup-label">UPI Lot</div>
+                            <div className="popup-val" style={{ fontFamily: 'monospace', color: '#60a5fa' }}>{p.UPI}</div>
+                          </div>
+                        )}
+                        {p.ADJPARCEL && (
+                          <div>
+                            <div className="popup-label">Parcel Bersebelahan</div>
+                            <div className="popup-val" style={{ fontFamily: 'monospace' }}>{p.ADJPARCEL}</div>
+                          </div>
+                        )}
+                        {p.BEARING !== undefined && (
+                          <div>
+                            <div className="popup-label">Bearing Sempadan</div>
+                            <div className="popup-val" style={{ color: '#10b981', fontWeight: 'bold' }}>{p.BEARING}°</div>
+                          </div>
+                        )}
+                        {p.JARAK !== undefined && (
+                          <div>
+                            <div className="popup-label">Jarak Sempadan</div>
+                            <div className="popup-val" style={{ color: '#f59e0b', fontWeight: 'bold' }}>{p.JARAK} Meter</div>
+                          </div>
+                        )}
+                        {p.BLOCK && (
+                          <div>
+                            <div className="popup-label">Blok Ukur</div>
+                            <div className="popup-val">{p.BLOCK}</div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </Popup>
+                </Polyline>
               );
             }
             return null;

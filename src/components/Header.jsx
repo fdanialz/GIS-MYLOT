@@ -5,7 +5,9 @@ export default function Header({
   onOpenQgisModal, 
   onOpenReportModal, 
   isSidebarOpen, 
-  setIsSidebarOpen 
+  setIsSidebarOpen,
+  selectedDaerah,
+  onSelectDaerah
 }) {
   return (
     <header className="app-header">
@@ -34,9 +36,36 @@ export default function Header({
       </div>
 
       <div className="header-badges">
-        <div className="badge-ns">
-          <Compass size={13} /> Negeri Sembilan
+        {/* Quick Daerah Selector */}
+        <div style={{ display: 'flex', alignItems: 'center', background: '#1e293b', padding: '2px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)', flexWrap: 'wrap' }}>
+          {[
+            { id: 'all', label: '🗺️ Semua' },
+            { id: 'seremban', label: '🏙️ Seremban' },
+            { id: 'jempol', label: '🌲 Jempol' },
+            { id: 'pd', label: '🏖️ Port Dickson' },
+            { id: 'rembau', label: '🌾 Rembau' },
+            { id: 'tampin', label: '⛰️ Tampin' }
+          ].map(d => (
+            <button
+              key={d.id}
+              onClick={() => onSelectDaerah && onSelectDaerah(d.id)}
+              style={{
+                background: selectedDaerah === d.id ? '#3b82f6' : 'transparent',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '6px',
+                padding: '0.22rem 0.5rem',
+                fontSize: '0.7rem',
+                fontWeight: selectedDaerah === d.id ? 700 : 500,
+                cursor: 'pointer',
+                transition: 'background 0.2s'
+              }}
+            >
+              {d.label}
+            </button>
+          ))}
         </div>
+
         <div className="badge-gmaps">
           🗺️ Google Maps Powered
         </div>

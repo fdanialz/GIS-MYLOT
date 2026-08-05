@@ -79,15 +79,15 @@
   {
     "key": "V_NDCDBLOT_region",
     "file": "V_NDCDBLOT_region.json",
-    "featureCount": 279467,
-    "sizeMb": 225.5,
+    "featureCount": 1772,
+    "sizeMb": 2.88,
     "geomType": "Polygon"
   },
   {
     "key": "NDCDBBDY_polyline",
     "file": "NDCDBBDY_polyline.json",
-    "featureCount": 960899,
-    "sizeMb": 482.85,
+    "featureCount": 16921,
+    "sizeMb": 7.37,
     "geomType": "LineString"
   }
 ]
