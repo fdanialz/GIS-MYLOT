@@ -1,0 +1,4 @@
+🌐 GitHub Status:
+Remote: https://github.com/fdanialz/GIS-MYLOT.git
+Branch: main
+Status: Everything up-to-date (Working tree clean)
