@@ -601,7 +601,9 @@ export async function fetchDaerahLayerData(daerah, fileName) {
   }
 
   try {
-    const res = await fetch(`/data/${daerah}/${fileName}`);
+    const baseUrl = import.meta.env.BASE_URL || './';
+    const cleanBase = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
+    const res = await fetch(`${cleanBase}data/${daerah}/${fileName}`);
     if (!res.ok) throw new Error(`HTTP error ${res.status}`);
     const data = await res.json();
     cache[cacheKey] = data;
