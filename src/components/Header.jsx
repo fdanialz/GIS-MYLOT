@@ -16,6 +16,7 @@ export default function Header({
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
           className="sidebar-toggle-header-btn"
           title={isSidebarOpen ? "Sembunyikan Sidebar" : "Buka Sidebar"}
+          aria-label={isSidebarOpen ? "Sembunyikan sidebar" : "Buka sidebar"}
         >
           {isSidebarOpen ? <PanelLeftClose size={20} /> : <PanelLeftOpen size={20} />}
         </button>
@@ -29,7 +30,7 @@ export default function Header({
           />
         </div>
 
-        <div>
+        <div className="brand-copy">
           <div className="brand-title">MyRizab</div>
           <div className="brand-subtitle">Portal Tanah Rizab Negeri Sembilan (TRM • Hutan • Orang Asli)</div>
         </div>
@@ -37,7 +38,7 @@ export default function Header({
 
       <div className="header-badges">
         {/* Quick Daerah Selector */}
-        <div style={{ display: 'flex', alignItems: 'center', background: '#1e293b', padding: '2px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)', flexWrap: 'wrap' }}>
+        <div className="district-selector" aria-label="Pilih daerah">
           {[
             { id: 'all', label: '🗺️ Semua' },
             { id: 'seremban', label: '🏙️ Seremban' },
@@ -49,16 +50,9 @@ export default function Header({
             <button
               key={d.id}
               onClick={() => onSelectDaerah && onSelectDaerah(d.id)}
+              className={`district-btn ${selectedDaerah === d.id ? 'active' : ''}`}
               style={{
-                background: selectedDaerah === d.id ? '#3b82f6' : 'transparent',
-                color: '#fff',
-                border: 'none',
-                borderRadius: '6px',
-                padding: '0.22rem 0.5rem',
-                fontSize: '0.7rem',
                 fontWeight: selectedDaerah === d.id ? 700 : 500,
-                cursor: 'pointer',
-                transition: 'background 0.2s'
               }}
             >
               {d.label}
@@ -75,7 +69,7 @@ export default function Header({
 
         <button 
           onClick={onOpenQgisModal}
-          className="btn-secondary" 
+          className="btn-secondary header-action-btn"
           style={{ width: 'auto', padding: '0.4rem 0.75rem', fontSize: '0.75rem' }}
         >
           <Download size={14} /> Integrasi QGIS
@@ -83,7 +77,7 @@ export default function Header({
 
         <button 
           onClick={onOpenReportModal}
-          className="btn-primary" 
+          className="btn-primary header-action-btn"
           style={{ width: 'auto', padding: '0.4rem 0.75rem', fontSize: '0.75rem' }}
         >
           <FileText size={14} /> Laporan PDF

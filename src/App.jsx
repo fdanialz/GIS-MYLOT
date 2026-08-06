@@ -21,7 +21,9 @@ import {
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('layers');
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(
+    () => typeof window === 'undefined' || window.innerWidth > 768
+  );
   const [selectedDaerah, setSelectedDaerah] = useState('all'); // 'all', 'seremban', 'jempol', 'pd', 'rembau', 'tampin'
 
   // Initialize layer states: all layers toggled OFF by default on load
@@ -174,6 +176,14 @@ export default function App() {
       />
 
       <div className="app-container">
+        {isSidebarOpen && (
+          <button
+            className="sidebar-backdrop"
+            onClick={() => setIsSidebarOpen(false)}
+            aria-label="Tutup panel menu"
+          />
+        )}
+
         {/* Left Sidebar Control Panel */}
         <aside className={`app-sidebar ${isSidebarOpen ? 'open' : 'closed'}`}>
           <nav className="sidebar-tabs">
@@ -265,7 +275,7 @@ export default function App() {
         )}
 
         {/* GIS Map Canvas */}
-        <main style={{ flex: 1, position: 'relative', overflow: 'hidden' }}>
+        <main className="map-main">
           <MapViewer 
             layers={layers}
             opacity={opacity}

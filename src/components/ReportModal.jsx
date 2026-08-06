@@ -9,18 +9,18 @@ export default function ReportModal({ onClose }) {
 
   return (
     <div className="modal-overlay">
-      <div className="modal-box" style={{ maxWidth: '750px' }}>
+      <div className="modal-box report-modal" style={{ maxWidth: '750px' }} role="dialog" aria-modal="true" aria-labelledby="report-title">
         <div className="modal-header">
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <FileText color="#3b82f6" />
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 800 }}>LAPORAN STATUS SPASIAL TANAH RIZAB NEGERI SEMBILAN</h3>
+            <h3 id="report-title" style={{ fontSize: '1.1rem', fontWeight: 800 }}>LAPORAN STATUS SPASIAL TANAH RIZAB NEGERI SEMBILAN</h3>
           </div>
-          <button onClick={onClose} className="close-btn"><X size={20} /></button>
+          <button onClick={onClose} className="close-btn" aria-label="Tutup laporan"><X size={20} /></button>
         </div>
 
         <div className="modal-body" id="print-area">
           <div style={{ background: 'rgba(15,23,42,0.6)', padding: '1rem', borderRadius: '10px', marginBottom: '1rem', border: '1px solid var(--border-color)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '0.5rem', marginBottom: '0.75rem' }}>
+            <div className="report-heading-row" style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '0.5rem', marginBottom: '0.75rem' }}>
               <div>
                 <h4 style={{ color: '#f59e0b', fontSize: '1rem' }}>PENTADBIRAN TANAH NEGERI SEMBILAN</h4>
                 <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Tarikh Cetakan: {new Date().toLocaleDateString('ms-MY')}</div>
@@ -30,7 +30,7 @@ export default function ReportModal({ onClose }) {
               </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.75rem', textAlign: 'center', marginBottom: '1rem' }}>
+            <div className="report-stat-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.75rem', textAlign: 'center', marginBottom: '1rem' }}>
               <div style={{ background: 'rgba(239, 68, 68, 0.1)', padding: '0.6rem', borderRadius: '6px', border: '1px solid rgba(239,68,68,0.3)' }}>
                 <Shield size={16} color="#ef4444" style={{ margin: '0 auto' }} />
                 <div style={{ fontSize: '0.75rem', color: '#cbd5e1', marginTop: '0.2rem' }}>Rizab Melayu</div>
@@ -49,6 +49,7 @@ export default function ReportModal({ onClose }) {
             </div>
 
             <h5 style={{ fontSize: '0.85rem', color: '#f8fafc', marginBottom: '0.5rem' }}>Perincian Mengikut Daerah Pentadbiran N.S.:</h5>
+            <div className="report-table-wrap">
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.75rem', textAlign: 'left' }}>
               <thead>
                 <tr style={{ background: 'rgba(255,255,255,0.08)', color: '#94a3b8' }}>
@@ -69,9 +70,10 @@ export default function ReportModal({ onClose }) {
                 ))}
               </tbody>
             </table>
+            </div>
           </div>
 
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <div className="report-actions" style={{ display: 'flex', gap: '0.5rem' }}>
             <button onClick={handlePrint} className="btn-primary">
               <Printer size={16} /> Cetak Laporan PDF / Print
             </button>
