@@ -234,18 +234,39 @@ export default function MapViewer({
 
         <MapClickListener onMapClick={onMapClick} />
 
+        {/* Selected / Searched Location Highlight Polygon */}
+        {selectedLocation && selectedLocation.feature && selectedLocation.feature.geometry && (
+          <Polygon
+            positions={parseCoordinates(selectedLocation.feature.geometry.coordinates, selectedLocation.feature.geometry.type)}
+            pathOptions={{
+              color: '#f59e0b',
+              fillColor: '#fbbf24',
+              fillOpacity: 0.6,
+              weight: 4,
+              dashArray: '6, 6'
+            }}
+          />
+        )}
+
         {/* Selected / Searched Location Marker */}
         {selectedLocation && selectedLocation.center && (
           <Marker position={selectedLocation.center}>
             <Popup>
               <div className="popup-card">
-                <div className="popup-header" style={{ color: '#3b82f6' }}>
+                <div className="popup-header" style={{ color: '#f59e0b', fontWeight: 800 }}>
                   <MapPin size={16} /> {selectedLocation.label || 'Lokasi Dipilih'}
                 </div>
-                <div style={{ fontSize: '0.78rem', color: '#cbd5e1' }}>
-                  Lat: {selectedLocation.center[0].toFixed(5)}, Lng: {selectedLocation.center[1].toFixed(5)}
+                <div style={{ fontSize: '0.78rem', color: '#cbd5e1', marginTop: '0.2rem' }}>
+                  {selectedLocation.layerName && <div><strong>Lapisan:</strong> {selectedLocation.layerName}</div>}
+                  {selectedLocation.properties && selectedLocation.properties.UPI && <div><strong>UPI:</strong> {selectedLocation.properties.UPI}</div>}
+                  {selectedLocation.properties && selectedLocation.properties.NOPW && <div><strong>NOPW:</strong> {selectedLocation.properties.NOPW}</div>}
+                  {selectedLocation.properties && selectedLocation.properties.PA && <div><strong>PA:</strong> {selectedLocation.properties.PA}</div>}
+                  {selectedLocation.properties && selectedLocation.properties.KELUASAN && <div><strong>Keluasan:</strong> {selectedLocation.properties.KELUASAN} m²</div>}
+                  <div style={{ color: '#94a3b8', marginTop: '0.2rem' }}>
+                    Lat: {selectedLocation.center[0].toFixed(5)}, Lng: {selectedLocation.center[1].toFixed(5)}
+                  </div>
                 </div>
-                <div className="popup-actions">
+                <div className="popup-actions" style={{ marginTop: '0.4rem' }}>
                   <a 
                     href={getGoogleMapsUrl(selectedLocation.center[0], selectedLocation.center[1])} 
                     target="_blank" 

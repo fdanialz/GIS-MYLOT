@@ -52,58 +52,30 @@ export default function App() {
   };
 
   // Handle Search Result Selection
-  const handleSearchResult = (term) => {
-    const termLower = term.toLowerCase();
+  const handleSelectSearchResult = (result) => {
+    if (!result) return;
     
-    // Check in TRM
-    const trmMatch = RIZAB_MELAYU_NS.features.find(f => 
-      f.properties.nama.toLowerCase().includes(termLower) ||
-      f.properties.noLot.toLowerCase().includes(termLower) ||
-      f.properties.mukim.toLowerCase().includes(termLower)
-    );
-
-    if (trmMatch) {
-      const coords = trmMatch.geometry.coordinates[0][0];
-      setSelectedLocation({
-        center: [coords[1], coords[0]],
-        zoom: 14,
-        label: `${trmMatch.properties.nama} (${trmMatch.properties.noLot})`
-      });
-      return;
+    // Automatically turn on the layer if it's currently disabled
+    if (result.layerId && !layers[result.layerId]) {
+      setLayers(prev => ({
+        ...prev,
+        [result.layerId]: true
+      }));
     }
 
-    // Check in HSK
-    const hskMatch = HUTAN_SIMPAN_NS.features.find(f => 
-      f.properties.nama.toLowerCase().includes(termLower) ||
-      f.properties.daerahHutan.toLowerCase().includes(termLower)
-    );
-
-    if (hskMatch) {
-      const coords = hskMatch.geometry.coordinates[0][0];
-      setSelectedLocation({
-        center: [coords[1], coords[0]],
-        zoom: 13,
-        label: hskMatch.properties.nama
-      });
-      return;
+    // Set selected daerah if district is specified
+    if (result.daerah && selectedDaerah !== result.daerah && selectedDaerah !== 'all') {
+      setSelectedDaerah(result.daerah);
     }
 
-    // Check in ROA
-    const roaMatch = RIZAB_ORANG_ASLI_NS.features.find(f => 
-      f.properties.nama.toLowerCase().includes(termLower)
-    );
-
-    if (roaMatch) {
-      const coords = roaMatch.geometry.coordinates[0][0];
-      setSelectedLocation({
-        center: [coords[1], coords[0]],
-        zoom: 14,
-        label: roaMatch.properties.nama
-      });
-      return;
-    }
-
-    alert(`Tiada padanan lot ditemui untuk carian: "${term}" dalam data Negeri Sembilan. Silakan cuba katakunci lain seperti "Ampangan", "Berembun", atau "Lot 3481".`);
+    setSelectedLocation({
+      center: result.center,
+      zoom: 16,
+      label: result.title,
+      feature: result.feature,
+      properties: result.properties,
+      layerName: result.layerName
+    });
   };
 
   // Handle Location Selection
@@ -258,7 +230,7 @@ export default function App() {
             {activeTab === 'search' && (
               <SearchPanel 
                 onSelectLocation={handleSelectLocation}
-                onSearchResult={handleSearchResult}
+                onSelectSearchResult={handleSelectSearchResult}
               />
             )}
 

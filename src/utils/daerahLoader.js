@@ -1,4 +1,7 @@
 // Helper to dynamically load Seremban, Jempol, Port Dickson, Rembau & Tampin Shapefile GeoJSON datasets
+import { RIZAB_MELAYU_NS, HUTAN_SIMPAN_NS, RIZAB_ORANG_ASLI_NS } from '../data/negeriSembilanData';
+import { getFeatureCenterAndBounds } from './spatialUtils';
+
 const cache = {};
 
 export const SEREMBAN_LAYERS_CONFIG = [
@@ -618,3 +621,125 @@ export async function fetchDaerahLayerData(daerah, fileName) {
 export async function fetchSerembanLayerData(fileName) {
   return fetchDaerahLayerData('seremban', fileName);
 }
+
+export async function searchAllDatasets(searchTerm) {
+  if (!searchTerm || !searchTerm.trim()) return [];
+
+  const rawTerm = searchTerm.trim();
+  const termLower = rawTerm.toLowerCase();
+  // Strip common lot prefixes
+  const cleanedNum = rawTerm.replace(/^(lot|pw|pa|pt|warta|mukim|no\.?)\s*/i, '').trim().toLowerCase();
+
+  const results = [];
+  const seenIds = new Set();
+
+  // 1. Search Static Datasets
+  const staticCollections = [
+    { name: 'Rizab Melayu', collection: RIZAB_MELAYU_NS, layerId: 'malayRes' },
+    { name: 'Hutan Simpan', collection: HUTAN_SIMPAN_NS, layerId: 'forestRes' },
+    { name: 'Rizab Orang Asli', collection: RIZAB_ORANG_ASLI_NS, layerId: 'aborigineRes' }
+  ];
+
+  staticCollections.forEach(({ name, collection, layerId }) => {
+    if (!collection || !collection.features) return;
+    collection.features.forEach(f => {
+      const p = f.properties || {};
+      const matchName = p.nama && p.nama.toLowerCase().includes(termLower);
+      const matchLot = p.noLot && (p.noLot.toLowerCase().includes(termLower) || (cleanedNum && p.noLot.toLowerCase().includes(cleanedNum)));
+      const matchMukim = p.mukim && p.mukim.toLowerCase().includes(termLower);
+      const matchWarta = p.noWarta && p.noWarta.toLowerCase().includes(termLower);
+
+      if (matchName || matchLot || matchMukim || matchWarta) {
+        const spatialInfo = getFeatureCenterAndBounds(f);
+        if (!spatialInfo) return;
+
+        const uid = `${f.id || p.id || p.nama}`;
+        if (seenIds.has(uid)) return;
+        seenIds.add(uid);
+
+        results.push({
+          id: uid,
+          title: p.nama || p.noLot || 'Lot Spasial',
+          subtitle: `${p.daerah || 'N.S.'} • ${p.mukim || ''} • ${p.noLot || ''}`,
+          layerName: name,
+          layerId,
+          daerah: (p.daerah || 'seremban').toLowerCase(),
+          properties: p,
+          feature: f,
+          center: spatialInfo.center
+        });
+      }
+    });
+  });
+
+  // 2. Search District GeoJSON Datasets
+  const districtPromises = ALL_LAYERS_CONFIG.map(async (cfg) => {
+    try {
+      const data = await fetchDaerahLayerData(cfg.daerah || 'seremban', cfg.file);
+      if (!data || !data.features) return;
+
+      data.features.forEach((f, idx) => {
+        const p = f.properties || {};
+        
+        const nopw = (p.NOPW || p.noPW || '').toString();
+        const pa = (p.PA || p.noPA || '').toString();
+        const upi = (p.UPI || '').toString();
+        const lotNama = (p.LOT_NAMA || p.noLot || p.LOT || p.NO_LOT || '').toString();
+        const noFail = (p.NOFAILUKUR || '').toString();
+        const nama = (p.nama || p.NAMA || '').toString();
+        const mukim = (p.mukim || p.MUKIM || p.NM_MUKIM || '').toString();
+        const warta = (p.noWarta || p.WARTA || p.NO_WARTA || '').toString();
+        const daerahCode = cfg.daerah || 'seremban';
+        const daerahName = daerahCode.toUpperCase();
+
+        const matchNopw = nopw && (nopw.toLowerCase().includes(termLower) || (cleanedNum && nopw.toLowerCase().includes(cleanedNum)));
+        const matchPa = pa && (pa.toLowerCase().includes(termLower) || (cleanedNum && pa.toLowerCase().includes(cleanedNum)));
+        const matchUpi = upi && upi.toLowerCase().includes(termLower);
+        const matchLotNama = lotNama && (lotNama.toLowerCase().includes(termLower) || (cleanedNum && lotNama.toLowerCase().includes(cleanedNum)));
+        const matchNoFail = noFail && (noFail.toLowerCase().includes(termLower) || (cleanedNum && noFail.toLowerCase().includes(cleanedNum)));
+        const matchNama = nama && nama.toLowerCase().includes(termLower);
+        const matchMukim = mukim && mukim.toLowerCase().includes(termLower);
+        const matchWarta = warta && warta.toLowerCase().includes(termLower);
+
+        if (matchNopw || matchPa || matchUpi || matchLotNama || matchNoFail || matchNama || matchMukim || matchWarta) {
+          const spatialInfo = getFeatureCenterAndBounds(f);
+          if (!spatialInfo) return;
+
+          const uid = `${cfg.id}-${p.MI_PRINX || p.OBJECTID || idx}-${nopw || pa || upi || lotNama}`;
+          if (seenIds.has(uid)) return;
+          seenIds.add(uid);
+
+          let displayTitle = '';
+          if (nopw) displayTitle += `PW: ${nopw} `;
+          if (pa) displayTitle += `(PA: ${pa}) `;
+          if (lotNama && lotNama !== 'A' && lotNama !== 'B') displayTitle += `Lot ${lotNama} `;
+          if (nama) displayTitle += nama;
+          if (!displayTitle.trim()) displayTitle = `Lot Spasial (${cfg.name})`;
+
+          let displaySub = `Daerah ${daerahName} • ${cfg.name}`;
+          if (upi) displaySub += ` • UPI: ${upi}`;
+          if (p.KELUASAN) displaySub += ` • Luas: ${p.KELUASAN} m²`;
+
+          results.push({
+            id: uid,
+            title: displayTitle.trim(),
+            subtitle: displaySub,
+            layerName: cfg.name,
+            layerId: cfg.id,
+            daerah: daerahCode,
+            properties: p,
+            feature: f,
+            center: spatialInfo.center
+          });
+        }
+      });
+    } catch (err) {
+      // ignore layer failure
+    }
+  });
+
+  await Promise.all(districtPromises);
+
+  return results;
+}
+

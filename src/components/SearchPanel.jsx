@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Search, MapPin, Navigation, ExternalLink } from 'lucide-react';
+import { Search, MapPin, Navigation, ExternalLink, Sparkles, Layers, AlertCircle, Loader2, CheckCircle2 } from 'lucide-react';
 import { NEGERI_SEMBILAN_BOUNDS } from '../data/negeriSembilanData';
+import { searchAllDatasets } from '../utils/daerahLoader';
 
 const DISTRICT_COORDS = {
   'Seremban': [2.7258, 101.9424],
@@ -12,16 +13,65 @@ const DISTRICT_COORDS = {
   'Tampin': [2.4701, 102.2302]
 };
 
-export default function SearchPanel({ onSelectLocation, onSearchResult }) {
+const SAMPLE_SEARCHES = [
+  { label: 'PW2163 (Port Dickson)', term: 'PW2163' },
+  { label: 'PA73315 (Warta)', term: 'PA73315' },
+  { label: 'Lot 3481 (Ampangan)', term: 'Lot 3481' },
+  { label: 'UPI 0503020005779', term: '0503020005779' },
+  { label: 'Mukim Ampangan', term: 'Ampangan' },
+  { label: 'Warta Jempol', term: 'Jempol' },
+  { label: 'Lot Rembau', term: 'Rembau' },
+  { label: 'Lot Tampin', term: 'Tampin' }
+];
+
+export default function SearchPanel({ onSelectLocation, onSelectSearchResult }) {
   const [searchTerm, setSearchTerm] = useState('');
+  const [searchResults, setSearchResults] = useState(null);
+  const [isSearching, setIsSearching] = useState(false);
+  const [activeResultId, setActiveResultId] = useState(null);
   const [selectedDistrict, setSelectedDistrict] = useState('');
   const [latInput, setLatInput] = useState('');
   const [lngInput, setLngInput] = useState('');
 
-  const handleSearch = (e) => {
+  const executeSearch = async (termToSearch) => {
+    const term = termToSearch !== undefined ? termToSearch : searchTerm;
+    if (!term || !term.trim()) return;
+    
+    setIsSearching(true);
+    setSearchResults(null);
+    try {
+      const results = await searchAllDatasets(term);
+      setSearchResults(results);
+      if (results.length > 0) {
+        const first = results[0];
+        setActiveResultId(first.id);
+        if (onSelectSearchResult) {
+          onSelectSearchResult(first);
+        }
+      }
+    } catch (err) {
+      console.error('Search error:', err);
+      setSearchResults([]);
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  const handleSearchSubmit = (e) => {
     e.preventDefault();
-    if (!searchTerm.trim()) return;
-    onSearchResult(searchTerm);
+    executeSearch();
+  };
+
+  const handleSampleClick = (term) => {
+    setSearchTerm(term);
+    executeSearch(term);
+  };
+
+  const handleResultClick = (res) => {
+    setActiveResultId(res.id);
+    if (onSelectSearchResult) {
+      onSelectSearchResult(res);
+    }
   };
 
   const handleCoordinateSearch = (e) => {
@@ -44,25 +94,106 @@ export default function SearchPanel({ onSelectLocation, onSearchResult }) {
 
   return (
     <div className="search-panel">
-      {/* Search by Lot / Name */}
+      {/* Search by Lot / Name / Warta */}
       <div className="card-section">
         <div className="card-title">
-          <Search size={18} color="#f59e0b" /> Carian Lot / Mukim / Warta
+          <Search size={18} color="#f59e0b" /> Carian Lot / Mukim / Warta Spasial
         </div>
-        <form onSubmit={handleSearch}>
+        <form onSubmit={handleSearchSubmit}>
           <div className="form-group">
             <input 
               type="text" 
               className="form-input" 
-              placeholder="Cari cth: Lot 3481, Ampangan, Berembun..." 
+              placeholder="Cari Lot, NOPW, PA, UPI, Mukim..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <button type="submit" className="btn-primary">
-            <Search size={14} /> Cari Lot Spasial
+          <button type="submit" className="btn-primary" disabled={isSearching}>
+            {isSearching ? <Loader2 size={14} className="animate-spin" /> : <Search size={14} />}
+            {isSearching ? ' Memproses Carian...' : ' Cari Lot Spasial'}
           </button>
         </form>
+
+        {/* Quick Sample Buttons */}
+        <div style={{ marginTop: '0.75rem' }}>
+          <div style={{ fontSize: '0.72rem', color: '#94a3b8', marginBottom: '0.35rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+            <Sparkles size={12} color="#f59e0b" /> Sampel Carian Pantas (Klik Untuk Uji):
+          </div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
+            {SAMPLE_SEARCHES.map((item, idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => handleSampleClick(item.term)}
+                style={{
+                  background: 'rgba(255, 255, 255, 0.06)',
+                  border: '1px solid rgba(255, 255, 255, 0.15)',
+                  color: '#e2e8f0',
+                  padding: '0.2rem 0.45rem',
+                  borderRadius: '4px',
+                  fontSize: '0.7rem',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease'
+                }}
+                onMouseOver={(e) => e.currentTarget.style.borderColor = '#f59e0b'}
+                onMouseOut={(e) => e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.15)'}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Search Results Display List */}
+        {isSearching && (
+          <div style={{ padding: '0.75rem', textAlign: 'center', color: '#60a5fa', fontSize: '0.8rem', marginTop: '0.75rem' }}>
+            ⏳ Meninjau keseluruhan pangkalan data spasial Negeri Sembilan...
+          </div>
+        )}
+
+        {searchResults !== null && !isSearching && (
+          <div style={{ marginTop: '0.75rem', borderTop: '1px solid rgba(255, 255, 255, 0.1)', paddingTop: '0.6rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+              <span style={{ fontSize: '0.78rem', fontWeight: 700, color: searchResults.length > 0 ? '#10b981' : '#ef4444' }}>
+                {searchResults.length > 0 ? `✅ Jumpa ${searchResults.length} padanan lot` : '❌ Tiada lot ditemui'}
+              </span>
+            </div>
+
+            {searchResults.length === 0 ? (
+              <div style={{ fontSize: '0.75rem', color: '#cbd5e1', background: 'rgba(239, 68, 68, 0.1)', padding: '0.5rem', borderRadius: '6px', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
+                Tiada lot ditemui untuk "{searchTerm}". Sila klik mana-mana sampel butang carian di atas (seperti <strong>PW2163</strong> atau <strong>Lot 3481</strong>) untuk menguji.
+              </div>
+            ) : (
+              <div style={{ maxHeight: '240px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '0.4rem', paddingRight: '0.2rem' }}>
+                {searchResults.map((res) => (
+                  <div
+                    key={res.id}
+                    onClick={() => handleResultClick(res)}
+                    style={{
+                      background: activeResultId === res.id ? 'rgba(59, 130, 246, 0.25)' : 'rgba(255, 255, 255, 0.04)',
+                      border: activeResultId === res.id ? '1px solid #3b82f6' : '1px solid rgba(255, 255, 255, 0.08)',
+                      borderRadius: '6px',
+                      padding: '0.5rem 0.6rem',
+                      cursor: 'pointer',
+                      transition: 'all 0.15s ease'
+                    }}
+                  >
+                    <div style={{ fontWeight: 700, fontSize: '0.82rem', color: activeResultId === res.id ? '#60a5fa' : '#f8fafc' }}>
+                      {res.title}
+                    </div>
+                    <div style={{ fontSize: '0.72rem', color: '#94a3b8', marginTop: '0.15rem' }}>
+                      {res.subtitle}
+                    </div>
+                    <div style={{ fontSize: '0.7rem', color: '#38bdf8', marginTop: '0.2rem', display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
+                      <CheckCircle2 size={11} /> Klik untuk sorot & fokus dalam peta
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Quick Jump to District */}

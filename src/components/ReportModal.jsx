@@ -26,7 +26,7 @@ export default function ReportModal({ onClose }) {
                 <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Tarikh Cetakan: {new Date().toLocaleDateString('ms-MY')}</div>
               </div>
               <div style={{ textAlign: 'right', fontSize: '0.75rem', color: '#60a5fa', fontWeight: 700 }}>
-                Dihasilkan oleh Portal MyLot Rizab GIS (QGIS Engine)
+                Dihasilkan oleh Portal MyRizab (QGIS Engine)
               </div>
             </div>
 

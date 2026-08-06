@@ -74,3 +74,43 @@ export function createBufferGeometry(lat, lng, radiusInMeters) {
   const buffered = turf.buffer(point, radiusInMeters / 1000, { units: 'kilometers' });
   return buffered;
 }
+
+// Calculate feature centroid and flat points [lat, lng]
+export function getFeatureCenterAndBounds(feature) {
+  if (!feature || !feature.geometry) return null;
+  const geomType = feature.geometry.type;
+  const coords = feature.geometry.coordinates;
+
+  let flatPts = [];
+  if (geomType === 'Polygon') {
+    flatPts = (coords[0] || []).map(pt => [pt[1], pt[0]]);
+  } else if (geomType === 'MultiPolygon') {
+    (coords || []).forEach(poly => {
+      if (poly && poly[0]) {
+        poly[0].forEach(pt => flatPts.push([pt[1], pt[0]]));
+      }
+    });
+  } else if (geomType === 'Point') {
+    return { center: [coords[1], coords[0]], coords: [[coords[1], coords[0]]] };
+  } else if (geomType === 'LineString' || geomType === 'Polyline') {
+    flatPts = (coords || []).map(pt => [pt[1], pt[0]]);
+  } else if (geomType === 'MultiLineString') {
+    (coords || []).forEach(line => {
+      (line || []).forEach(pt => flatPts.push([pt[1], pt[0]]));
+    });
+  }
+
+  if (flatPts.length === 0) return null;
+
+  let sumLat = 0, sumLng = 0;
+  flatPts.forEach(([lat, lng]) => {
+    sumLat += lat;
+    sumLng += lng;
+  });
+
+  return {
+    center: [sumLat / flatPts.length, sumLng / flatPts.length],
+    coords: flatPts
+  };
+}
+

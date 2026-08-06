@@ -30,7 +30,7 @@ export default function Header({
         </div>
 
         <div>
-          <div className="brand-title">MYLOT RIZAB GIS</div>
+          <div className="brand-title">MyRizab</div>
           <div className="brand-subtitle">Portal Tanah Rizab Negeri Sembilan (TRM • Hutan • Orang Asli)</div>
         </div>
       </div>
