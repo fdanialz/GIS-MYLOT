@@ -760,7 +760,6 @@ input:checked + .slider:before {
   color: white;
 }
 
-<<<<<<< Updated upstream
 .report-table-wrap { overflow-x: auto; }
 
 @media (max-width: 1180px) {
@@ -856,8 +855,22 @@ input:checked + .slider:before {
   .fullscreen-toggle-btn { margin-left: 0; }
   .floating-sidebar-toggle { top: 4.3rem; left: 0.6rem; }
 
+  /* Position zoom controls at bottom-left on mobile */
+  .leaflet-top.leaflet-left,
   .leaflet-top .leaflet-control-zoom {
-    margin-top: 7.25rem !important;
+    top: auto !important;
+    margin-top: 0 !important;
+    bottom: 1.5rem !important;
+    left: 0.75rem !important;
+    z-index: 850 !important;
+  }
+
+  /* Hide zoom controls completely when sidebar panel is open on mobile */
+  .map-container.sidebar-open .leaflet-top.leaflet-left,
+  .map-container.sidebar-open .leaflet-control-zoom {
+    display: none !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
   }
   .leaflet-control-attribution { max-width: 72vw; font-size: 8px !important; }
   .leaflet-popup-content { margin: 8px !important; }
@@ -897,13 +910,4 @@ input:checked + .slider:before {
 @media (hover: none) and (pointer: coarse) {
   button, input, select, a { touch-action: manipulation; }
   .close-btn { min-width: 44px; min-height: 44px; }
-}
-
-/* Ensure Leaflet zoom controls are positioned below the Menu Panel button on mobile & desktop */
-@media (max-width: 768px) {
-  .leaflet-top.leaflet-left,
-  .leaflet-top .leaflet-control-zoom {
-    margin-top: 7.5rem !important;
-    left: 0.6rem !important;
-  }
 }

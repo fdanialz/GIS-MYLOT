@@ -158,7 +158,7 @@ export default function MapViewer({
   };
 
   return (
-    <div className="map-container">
+    <div className={`map-container ${isSidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
       {/* Floating Basemap & Fullscreen Controls */}
       <div className="map-floating-bar">
         <div className="basemap-selector">
