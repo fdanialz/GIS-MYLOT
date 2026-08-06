@@ -23,7 +23,7 @@ export default function Header({
         {/* Official JUPEM Logo Badge */}
         <div className="brand-logo-container">
           <img 
-            src="/jupem_logo.svg" 
+            src={`${import.meta.env.BASE_URL}jupem_logo.svg`} 
             alt="Logo JUPEM" 
             className="jupem-brand-img"
           />
