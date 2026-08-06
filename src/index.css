@@ -828,7 +828,9 @@ input:checked + .slider:before {
   .fullscreen-toggle-btn { margin-left: 0; }
   .floating-sidebar-toggle { top: 4.3rem; left: 0.6rem; }
 
-  .leaflet-control-zoom { margin-bottom: max(10px, env(safe-area-inset-bottom)) !important; }
+  .leaflet-top .leaflet-control-zoom {
+    margin-top: 7.25rem !important;
+  }
   .leaflet-control-attribution { max-width: 72vw; font-size: 8px !important; }
   .leaflet-popup-content { margin: 8px !important; }
   .popup-card { min-width: 0; width: min(245px, 72vw); }
