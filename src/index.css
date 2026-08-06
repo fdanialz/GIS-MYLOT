@@ -314,6 +314,33 @@ body {
   background: #0f172a !important;
 }
 
+/* Move Leaflet Zoom Controls down below the floating Menu Panel button */
+.leaflet-top.leaflet-left {
+  top: 4.25rem !important;
+  left: 1rem !important;
+  z-index: 850 !important;
+}
+
+.leaflet-control-zoom {
+  border: 1px solid var(--border-color) !important;
+  border-radius: var(--radius-md) !important;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4) !important;
+}
+
+.leaflet-control-zoom a {
+  background-color: rgba(15, 23, 42, 0.9) !important;
+  color: #f1f5f9 !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  backdrop-filter: blur(10px);
+  transition: all 0.2s ease !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background-color: var(--accent-blue) !important;
+  color: #ffffff !important;
+}
+
 /* Custom Popup Style */
 .leaflet-popup-content-wrapper {
   background: rgba(15, 23, 42, 0.95) !important;
@@ -733,6 +760,7 @@ input:checked + .slider:before {
   color: white;
 }
 
+<<<<<<< Updated upstream
 .report-table-wrap { overflow-x: auto; }
 
 @media (max-width: 1180px) {
@@ -869,4 +897,13 @@ input:checked + .slider:before {
 @media (hover: none) and (pointer: coarse) {
   button, input, select, a { touch-action: manipulation; }
   .close-btn { min-width: 44px; min-height: 44px; }
+}
+
+/* Ensure Leaflet zoom controls are positioned below the Menu Panel button on mobile & desktop */
+@media (max-width: 768px) {
+  .leaflet-top.leaflet-left,
+  .leaflet-top .leaflet-control-zoom {
+    margin-top: 7.5rem !important;
+    left: 0.6rem !important;
+  }
 }
