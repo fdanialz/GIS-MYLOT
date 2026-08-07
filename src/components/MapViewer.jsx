@@ -203,6 +203,8 @@ export default function MapViewer({
           <button 
             className={`basemap-btn ${basemap === 'esri_imagery' ? 'active' : ''}`}
             onClick={() => setBasemap('esri_imagery')}
+            data-tooltip="ESRI Satelit"
+            aria-label="ESRI Satelit"
           >
             <Globe size={13} />
             <span>ESRI Satelit</span>
@@ -210,6 +212,8 @@ export default function MapViewer({
           <button 
             className={`basemap-btn ${basemap === 'gmaps_hybrid' ? 'active' : ''}`}
             onClick={() => setBasemap('gmaps_hybrid')}
+            data-tooltip="Google Hybrid"
+            aria-label="Google Hybrid"
           >
             <Layers size={13} />
             <span>Google Hybrid</span>
@@ -217,6 +221,8 @@ export default function MapViewer({
           <button 
             className={`basemap-btn ${basemap === 'gmaps_satellite' ? 'active' : ''}`}
             onClick={() => setBasemap('gmaps_satellite')}
+            data-tooltip="Google Satelit"
+            aria-label="Google Satelit"
           >
             <Compass size={13} />
             <span>Google Satelit</span>
@@ -224,6 +230,8 @@ export default function MapViewer({
           <button 
             className={`basemap-btn ${basemap === 'gmaps_roadmap' ? 'active' : ''}`}
             onClick={() => setBasemap('gmaps_roadmap')}
+            data-tooltip="Google Peta"
+            aria-label="Google Peta"
           >
             <Globe size={13} />
             <span>Google Peta</span>
@@ -231,6 +239,8 @@ export default function MapViewer({
           <button 
             className={`basemap-btn ${basemap === 'carto_dark' ? 'active' : ''}`}
             onClick={() => setBasemap('carto_dark')}
+            data-tooltip="Dark GIS"
+            aria-label="Dark GIS"
           >
             <Moon size={13} />
             <span>Dark GIS</span>
@@ -240,6 +250,8 @@ export default function MapViewer({
             className="fullscreen-toggle-btn"
             onClick={toggleFullscreen}
             title={isFullscreen ? "Keluar Skrin Penuh (ESC)" : "Skrin Penuh"}
+            data-tooltip={isFullscreen ? "Keluar Skrin Penuh" : "Skrin Penuh"}
+            aria-label={isFullscreen ? "Keluar skrin penuh" : "Buka skrin penuh"}
           >
             {isFullscreen ? <Minimize size={14} /> : <Maximize size={14} />}
           </button>
