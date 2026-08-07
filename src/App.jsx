@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
 import LayerControl from './components/LayerControl';
 import SearchPanel from './components/SearchPanel';
@@ -20,6 +20,19 @@ import {
 } from './utils/daerahLoader';
 
 export default function App() {
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem('myrizab_theme') || 'light';
+  });
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('myrizab_theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
+  };
+
   const [activeTab, setActiveTab] = useState('layers');
   const [isSidebarOpen, setIsSidebarOpen] = useState(
     () => typeof window === 'undefined' || window.innerWidth > 768
@@ -173,7 +186,10 @@ export default function App() {
         setIsSidebarOpen={setIsSidebarOpen}
         selectedDaerah={selectedDaerah}
         onSelectDaerah={handleSelectDaerah}
+        theme={theme}
+        onToggleTheme={toggleTheme}
       />
+
 
       <div className="app-container">
         {isSidebarOpen && (

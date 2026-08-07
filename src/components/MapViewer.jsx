@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Polygon, Polyline, Popup, Circle, Marker, useMap, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { ExternalLink, MapPin, Maximize, Minimize, Info } from 'lucide-react';
+import { ExternalLink, MapPin, Maximize, Minimize, Info, Globe, Layers, Moon, Compass, Camera } from 'lucide-react';
 import { NEGERI_SEMBILAN_BOUNDS } from '../data/negeriSembilanData';
 import { ALL_LAYERS_CONFIG, fetchDaerahLayerData } from '../utils/daerahLoader';
 import { getGoogleMapsUrl, getGoogleStreetViewUrl } from '../utils/spatialUtils';
@@ -36,11 +36,21 @@ function MapController({ center, zoom, isSidebarOpen, isFullscreen }) {
   return null;
 }
 
-// Click listener on Map
-function MapClickListener({ onMapClick }) {
+// Listener for map click, mousemove, and zoom events
+function MapEventsHandler({ onMapClick, onCursorMove, onZoomChange }) {
   useMapEvents({
     click(e) {
       onMapClick(e.latlng.lat, e.latlng.lng);
+    },
+    mousemove(e) {
+      if (onCursorMove) {
+        onCursorMove(e.latlng.lat, e.latlng.lng);
+      }
+    },
+    zoomend(e) {
+      if (onZoomChange) {
+        onZoomChange(e.target.getZoom());
+      }
     }
   });
   return null;
@@ -59,6 +69,8 @@ export default function MapViewer({
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [serembanGeoData, setSerembanGeoData] = useState({});
   const [loadingState, setLoadingState] = useState({});
+  const [cursorCoords, setCursorCoords] = useState({ lat: 2.7247, lng: 101.9378 });
+  const [currentZoom, setCurrentZoom] = useState(NEGERI_SEMBILAN_BOUNDS.zoom);
 
   // Monitor fullscreen change events
   useEffect(() => {
@@ -103,27 +115,27 @@ export default function MapViewer({
   const BASEMAP_TILES = {
     esri_imagery: {
       url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-      attribution: '&copy; <a href="https://www.esri.com">Esri World Imagery</a> (Jitu Kadaster)',
-      name: 'ESRI Satelit Jitu'
+      attribution: '&copy; <a href="https://www.esri.com">Esri World Imagery</a>',
+      name: 'ESRI Satelit'
     },
     gmaps_hybrid: {
       url: 'https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',
-      attribution: '&copy; <a href="https://maps.google.com">Google Maps</a> Hybrid',
+      attribution: '&copy; Google Maps Hybrid',
       name: 'Google Hybrid'
     },
     gmaps_satellite: {
       url: 'https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
-      attribution: '&copy; <a href="https://maps.google.com">Google Maps</a> Satellite',
+      attribution: '&copy; Google Maps Satellite',
       name: 'Google Satelit'
     },
     gmaps_roadmap: {
       url: 'https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
-      attribution: '&copy; <a href="https://maps.google.com">Google Maps</a> Roadmap',
-      name: 'Google Road'
+      attribution: '&copy; Google Maps Roadmap',
+      name: 'Google Peta'
     },
     carto_dark: {
       url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-      attribution: '&copy; CartoDB Dark',
+      attribution: '&copy; CartoDB Dark GIS',
       name: 'Carto Dark'
     }
   };
@@ -159,48 +171,51 @@ export default function MapViewer({
 
   return (
     <div className={`map-container ${isSidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
-      {/* Floating Basemap & Fullscreen Controls */}
+      {/* Clean GIS Floating Basemap Bar */}
       <div className="map-floating-bar">
         <div className="basemap-selector">
           <button 
             className={`basemap-btn ${basemap === 'esri_imagery' ? 'active' : ''}`}
             onClick={() => setBasemap('esri_imagery')}
-            style={{ background: basemap === 'esri_imagery' ? '#10b981' : undefined }}
           >
-            🌍 ESRI Satelit (Jitu Kadaster)
+            <Globe size={13} />
+            <span>ESRI Satelit</span>
           </button>
           <button 
             className={`basemap-btn ${basemap === 'gmaps_hybrid' ? 'active' : ''}`}
             onClick={() => setBasemap('gmaps_hybrid')}
           >
-            🗺️ Google Hybrid
+            <Layers size={13} />
+            <span>Google Hybrid</span>
           </button>
           <button 
             className={`basemap-btn ${basemap === 'gmaps_satellite' ? 'active' : ''}`}
             onClick={() => setBasemap('gmaps_satellite')}
           >
-            🛰️ Google Satelit
+            <Compass size={13} />
+            <span>Google Satelit</span>
           </button>
           <button 
             className={`basemap-btn ${basemap === 'gmaps_roadmap' ? 'active' : ''}`}
             onClick={() => setBasemap('gmaps_roadmap')}
           >
-            🚗 Google Road
+            <Globe size={13} />
+            <span>Google Peta</span>
           </button>
           <button 
             className={`basemap-btn ${basemap === 'carto_dark' ? 'active' : ''}`}
             onClick={() => setBasemap('carto_dark')}
           >
-            🌙 Dark GIS
+            <Moon size={13} />
+            <span>Dark GIS</span>
           </button>
 
           <button 
             className="fullscreen-toggle-btn"
             onClick={toggleFullscreen}
-            title={isFullscreen ? "Keluar Skrin Penuh (ESC)" : "Skrin Penuh (Full Screen)"}
+            title={isFullscreen ? "Keluar Skrin Penuh (ESC)" : "Skrin Penuh"}
           >
-            {isFullscreen ? <Minimize size={15} /> : <Maximize size={15} />}
-            <span>{isFullscreen ? "Keluar Fullscreen" : "Full Screen"}</span>
+            {isFullscreen ? <Minimize size={14} /> : <Maximize size={14} />}
           </button>
         </div>
       </div>
@@ -232,18 +247,22 @@ export default function MapViewer({
           isFullscreen={isFullscreen}
         />
 
-        <MapClickListener onMapClick={onMapClick} />
+        <MapEventsHandler 
+          onMapClick={onMapClick} 
+          onCursorMove={(lat, lng) => setCursorCoords({ lat, lng })}
+          onZoomChange={(zoom) => setCurrentZoom(zoom)}
+        />
 
         {/* Selected / Searched Location Highlight Polygon */}
         {selectedLocation && selectedLocation.feature && selectedLocation.feature.geometry && (
           <Polygon
             positions={parseCoordinates(selectedLocation.feature.geometry.coordinates, selectedLocation.feature.geometry.type)}
             pathOptions={{
-              color: '#f59e0b',
-              fillColor: '#fbbf24',
-              fillOpacity: 0.6,
-              weight: 4,
-              dashArray: '6, 6'
+              color: '#38bdf8',
+              fillColor: '#0284c7',
+              fillOpacity: 0.5,
+              weight: 3,
+              dashArray: '4, 4'
             }}
           />
         )}
@@ -253,27 +272,27 @@ export default function MapViewer({
           <Marker position={selectedLocation.center}>
             <Popup>
               <div className="popup-card">
-                <div className="popup-header" style={{ color: '#f59e0b', fontWeight: 800 }}>
-                  <MapPin size={16} /> {selectedLocation.label || 'Lokasi Dipilih'}
+                <div className="popup-header">
+                  <MapPin size={15} color="#38bdf8" /> {selectedLocation.label || 'Lokasi Dipilih'}
                 </div>
-                <div style={{ fontSize: '0.78rem', color: '#cbd5e1', marginTop: '0.2rem' }}>
+                <div className="popup-body-text">
                   {selectedLocation.layerName && <div><strong>Lapisan:</strong> {selectedLocation.layerName}</div>}
-                  {selectedLocation.properties && selectedLocation.properties.UPI && <div><strong>UPI:</strong> {selectedLocation.properties.UPI}</div>}
+                  {selectedLocation.properties && selectedLocation.properties.UPI && <div><strong>UPI:</strong> <code className="mono-val">{selectedLocation.properties.UPI}</code></div>}
                   {selectedLocation.properties && selectedLocation.properties.NOPW && <div><strong>NOPW:</strong> {selectedLocation.properties.NOPW}</div>}
                   {selectedLocation.properties && selectedLocation.properties.PA && <div><strong>PA:</strong> {selectedLocation.properties.PA}</div>}
                   {selectedLocation.properties && selectedLocation.properties.KELUASAN && <div><strong>Keluasan:</strong> {selectedLocation.properties.KELUASAN} m²</div>}
-                  <div style={{ color: '#94a3b8', marginTop: '0.2rem' }}>
-                    Lat: {selectedLocation.center[0].toFixed(5)}, Lng: {selectedLocation.center[1].toFixed(5)}
+                  <div className="popup-coords">
+                    Lat: {selectedLocation.center[0].toFixed(5)}° N, Lng: {selectedLocation.center[1].toFixed(5)}° E
                   </div>
                 </div>
-                <div className="popup-actions" style={{ marginTop: '0.4rem' }}>
+                <div className="popup-actions">
                   <a 
                     href={getGoogleMapsUrl(selectedLocation.center[0], selectedLocation.center[1])} 
                     target="_blank" 
                     rel="noreferrer" 
                     className="gmaps-btn"
                   >
-                    <ExternalLink size={12} /> Buka di Google Maps
+                    <ExternalLink size={12} /> Google Maps
                   </a>
                   <a 
                     href={getGoogleStreetViewUrl(selectedLocation.center[0], selectedLocation.center[1])} 
@@ -281,13 +300,14 @@ export default function MapViewer({
                     rel="noreferrer" 
                     className="streetview-btn"
                   >
-                    📸 Street View
+                    <Camera size={12} /> Street View
                   </a>
                 </div>
               </div>
             </Popup>
           </Marker>
         )}
+
 
         {/* Buffer Circle Overlay */}
         {bufferData && (
@@ -419,7 +439,7 @@ export default function MapViewer({
                           rel="noreferrer" 
                           className="streetview-btn"
                         >
-                          📸 Street View
+                          <Camera size={12} /> Street View
                         </a>
                       </div>
                     </div>
@@ -446,25 +466,25 @@ export default function MapViewer({
                         {p.UPI && (
                           <div>
                             <div className="popup-label">UPI Lot</div>
-                            <div className="popup-val" style={{ fontFamily: 'monospace', color: '#60a5fa' }}>{p.UPI}</div>
+                            <div className="popup-val mono-val">{p.UPI}</div>
                           </div>
                         )}
                         {p.ADJPARCEL && (
                           <div>
                             <div className="popup-label">Parcel Bersebelahan</div>
-                            <div className="popup-val" style={{ fontFamily: 'monospace' }}>{p.ADJPARCEL}</div>
+                            <div className="popup-val mono-val">{p.ADJPARCEL}</div>
                           </div>
                         )}
                         {p.BEARING !== undefined && (
                           <div>
                             <div className="popup-label">Bearing Sempadan</div>
-                            <div className="popup-val" style={{ color: '#10b981', fontWeight: 'bold' }}>{p.BEARING}°</div>
+                            <div className="popup-val mono-val">{p.BEARING}°</div>
                           </div>
                         )}
                         {p.JARAK !== undefined && (
                           <div>
                             <div className="popup-label">Jarak Sempadan</div>
-                            <div className="popup-val" style={{ color: '#f59e0b', fontWeight: 'bold' }}>{p.JARAK} Meter</div>
+                            <div className="popup-val mono-val">{p.JARAK} m</div>
                           </div>
                         )}
                         {p.BLOCK && (
@@ -520,6 +540,33 @@ export default function MapViewer({
           return null;
         })}
       </MapContainer>
+
+      {/* Professional GIS Canvas Footer Status Bar */}
+      <footer className="map-status-bar">
+        <div className="status-item">
+          <span className="status-label">LAT:</span>
+          <span className="status-value mono">{cursorCoords.lat.toFixed(5)}° N</span>
+        </div>
+        <div className="status-divider">|</div>
+        <div className="status-item">
+          <span className="status-label">LNG:</span>
+          <span className="status-value mono">{cursorCoords.lng.toFixed(5)}° E</span>
+        </div>
+        <div className="status-divider">|</div>
+        <div className="status-item">
+          <span className="status-label">ZOOM:</span>
+          <span className="status-value mono">Z{currentZoom}</span>
+        </div>
+        <div className="status-divider">|</div>
+        <div className="status-item">
+          <span className="status-label">CRS:</span>
+          <span className="status-value mono">WGS 84 (EPSG:4326)</span>
+        </div>
+        <div className="status-right">
+          <span className="status-tag">JUPEM Spatial Engine</span>
+        </div>
+      </footer>
     </div>
   );
 }
+

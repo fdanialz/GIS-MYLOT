@@ -1,5 +1,23 @@
 import React from 'react';
-import { Layers, Shield, TreePine, Users, MapPin, FileCheck2, FileText, CheckCircle2, Box, Filter } from 'lucide-react';
+import { 
+  Layers, 
+  Shield, 
+  TreePine, 
+  Users, 
+  MapPin, 
+  FileCheck2, 
+  FileText, 
+  CheckCircle2, 
+  Box, 
+  Eye, 
+  EyeOff, 
+  Map, 
+  Building2, 
+  Trees, 
+  Waves, 
+  Sprout, 
+  Mountain 
+} from 'lucide-react';
 import { 
   SEREMBAN_LAYERS_CONFIG, 
   JEMPOL_LAYERS_CONFIG, 
@@ -40,22 +58,12 @@ export default function LayerControl({
 
   const renderLayerGroup = (title, configList, statsDict) => {
     return (
-      <div style={{ marginBottom: '1.25rem' }}>
-        <div style={{ 
-          fontSize: '0.78rem', 
-          fontWeight: 700, 
-          color: '#60a5fa', 
-          marginBottom: '0.5rem', 
-          display: 'flex', 
-          alignItems: 'center', 
-          gap: '0.35rem',
-          borderBottom: '1px solid rgba(255,255,255,0.08)',
-          paddingBottom: '0.35rem'
-        }}>
+      <div className="layer-group-container">
+        <div className="layer-group-header">
           <MapPin size={14} /> {title}
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+        <div className="layer-items-list">
           {configList.map(cfg => {
             const isChecked = !!layers[cfg.id];
             const count = statsDict && statsDict[cfg.id] !== undefined 
@@ -63,15 +71,15 @@ export default function LayerControl({
               : cfg.description;
 
             return (
-              <div className="layer-toggle-item" key={cfg.id} style={{ background: isChecked ? 'rgba(30, 41, 59, 0.7)' : 'transparent' }}>
+              <div className={`layer-toggle-item ${isChecked ? 'checked' : ''}`} key={cfg.id}>
                 <div className="layer-info">
                   <div className="layer-color-dot" style={{ background: cfg.color }} />
                   <div>
-                    <div className="layer-name" style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontWeight: isChecked ? 700 : 500 }}>
+                    <div className="layer-name">
                       {getIconForLayer(cfg.id)}
                       {cfg.name}
                     </div>
-                    <div className="layer-count" style={{ fontSize: '0.7rem', color: '#94a3b8' }}>
+                    <div className="layer-count">
                       {count}
                     </div>
                   </div>
@@ -108,87 +116,65 @@ export default function LayerControl({
     });
   };
 
+  const districtFilters = [
+    { id: 'all', label: 'Semua', icon: Map },
+    { id: 'seremban', label: 'Seremban', icon: Building2 },
+    { id: 'jempol', label: 'Jempol', icon: Trees },
+    { id: 'pd', label: 'Port Dickson', icon: Waves },
+    { id: 'rembau', label: 'Rembau', icon: Sprout },
+    { id: 'tampin', label: 'Tampin', icon: Mountain }
+  ];
+
   return (
     <div className="layer-control-panel">
       {/* Header Banner */}
-      <div className="card-section" style={{ borderLeft: '4px solid #3b82f6', background: 'rgba(59, 130, 246, 0.08)' }}>
-        <div className="card-title" style={{ color: '#60a5fa' }}>
-          <CheckCircle2 size={18} color="#60a5fa" /> Data Shapefile Negeri Sembilan (JUPEM)
+      <div className="layer-banner-info">
+        <div className="layer-banner-title">
+          <CheckCircle2 size={16} color="#60a5fa" /> Shapefile JUPEM N.S.
         </div>
-        <p style={{ fontSize: '0.75rem', color: '#cbd5e1', lineHeight: '1.4', margin: 0 }}>
-          Semua fail <b>.SHP / .DBF</b> daripada 5 Daerah (Seremban, Jempol, Port Dickson, Rembau, Tampin) telah sedia ditayangkan!
+        <p className="layer-banner-desc">
+          Semua fail <b>.SHP</b> 5 Daerah (Seremban, Jempol, Port Dickson, Rembau, Tampin) sedia ditayangkan.
         </p>
       </div>
 
       <div className="card-section">
-        <div className="card-title" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span><Layers size={18} color="#60a5fa" /> Lapisan Spasial</span>
-          <div style={{ display: 'flex', gap: '0.35rem' }}>
+        <div className="layer-section-title">
+          <span><Layers size={16} color="#60a5fa" /> Lapisan Spasial</span>
+          <div className="layer-bulk-actions">
             <button
               onClick={turnAllOff}
               title="Tutup Semua Lapisan"
-              style={{
-                fontSize: '0.68rem',
-                background: 'rgba(239, 68, 68, 0.15)',
-                color: '#f87171',
-                border: '1px solid rgba(239, 68, 68, 0.3)',
-                borderRadius: '4px',
-                padding: '0.2rem 0.45rem',
-                cursor: 'pointer',
-                fontWeight: 600
-              }}
+              className="btn-bulk-toggle danger"
             >
-              ❌ Tutup Semua
+              <EyeOff size={12} /> Tutup Semua
             </button>
             <button
               onClick={turnAllOn}
               title="Buka Semua Lapisan"
-              style={{
-                fontSize: '0.68rem',
-                background: 'rgba(16, 185, 129, 0.15)',
-                color: '#34d399',
-                border: '1px solid rgba(16, 185, 129, 0.3)',
-                borderRadius: '4px',
-                padding: '0.2rem 0.45rem',
-                cursor: 'pointer',
-                fontWeight: 600
-              }}
+              className="btn-bulk-toggle success"
             >
-              ✅ Buka Semua
+              <Eye size={12} /> Buka Semua
             </button>
           </div>
         </div>
 
         {/* Daerah Filter Buttons */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.35rem', margin: '0.75rem 0 1rem 0' }}>
-          {[
-            { id: 'all', label: '🗺️ Semua' },
-            { id: 'seremban', label: '🏙️ Seremban' },
-            { id: 'jempol', label: '🌲 Jempol' },
-            { id: 'pd', label: '🏖️ Port Dickson' },
-            { id: 'rembau', label: '🌾 Rembau' },
-            { id: 'tampin', label: '⛰️ Tampin' }
-          ].map(d => (
-            <button
-              key={d.id}
-              onClick={() => onSelectDaerah(d.id)}
-              style={{
-                padding: '0.35rem 0.2rem',
-                fontSize: '0.7rem',
-                fontWeight: selectedDaerah === d.id ? 700 : 500,
-                borderRadius: '6px',
-                border: selectedDaerah === d.id ? '1px solid #3b82f6' : '1px solid rgba(255,255,255,0.1)',
-                background: selectedDaerah === d.id ? '#1d4ed8' : '#1e293b',
-                color: '#fff',
-                cursor: 'pointer',
-                transition: 'all 0.2s',
-                textAlign: 'center'
-              }}
-            >
-              {d.label}
-            </button>
-          ))}
+        <div className="layer-district-grid">
+          {districtFilters.map(d => {
+            const IconComp = d.icon;
+            return (
+              <button
+                key={d.id}
+                onClick={() => onSelectDaerah(d.id)}
+                className={`layer-district-btn ${selectedDaerah === d.id ? 'active' : ''}`}
+              >
+                <IconComp size={12} />
+                <span>{d.label}</span>
+              </button>
+            );
+          })}
         </div>
+
 
         {/* Render Seremban Group */}
         {(selectedDaerah === 'all' || selectedDaerah === 'seremban') && (

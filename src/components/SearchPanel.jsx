@@ -117,8 +117,8 @@ export default function SearchPanel({ onSelectLocation, onSelectSearchResult }) 
 
         {/* Quick Sample Buttons */}
         <div style={{ marginTop: '0.75rem' }}>
-          <div style={{ fontSize: '0.72rem', color: '#94a3b8', marginBottom: '0.35rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-            <Sparkles size={12} color="#f59e0b" /> Sampel Carian Pantas (Klik Untuk Uji):
+          <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginBottom: '0.35rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+            <Sparkles size={12} color="#3b82f6" /> Sampel Carian Spasial:
           </div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
             {SAMPLE_SEARCHES.map((item, idx) => (
@@ -126,18 +126,8 @@ export default function SearchPanel({ onSelectLocation, onSelectSearchResult }) 
                 key={idx}
                 type="button"
                 onClick={() => handleSampleClick(item.term)}
-                style={{
-                  background: 'rgba(255, 255, 255, 0.06)',
-                  border: '1px solid rgba(255, 255, 255, 0.15)',
-                  color: '#e2e8f0',
-                  padding: '0.2rem 0.45rem',
-                  borderRadius: '4px',
-                  fontSize: '0.7rem',
-                  cursor: 'pointer',
-                  transition: 'all 0.15s ease'
-                }}
-                onMouseOver={(e) => e.currentTarget.style.borderColor = '#f59e0b'}
-                onMouseOut={(e) => e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.15)'}
+                className="btn-header-action btn-secondary"
+                style={{ fontSize: '0.68rem', padding: '0.25rem 0.45rem' }}
               >
                 {item.label}
               </button>
@@ -147,22 +137,26 @@ export default function SearchPanel({ onSelectLocation, onSelectSearchResult }) 
 
         {/* Search Results Display List */}
         {isSearching && (
-          <div style={{ padding: '0.75rem', textAlign: 'center', color: '#60a5fa', fontSize: '0.8rem', marginTop: '0.75rem' }}>
-            ⏳ Meninjau keseluruhan pangkalan data spasial Negeri Sembilan...
+          <div style={{ padding: '0.75rem', textAlign: 'center', color: '#60a5fa', fontSize: '0.78rem', marginTop: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem' }}>
+            <Loader2 size={14} className="animate-spin" /> Meninjau pangkalan data spasial...
           </div>
         )}
 
         {searchResults !== null && !isSearching && (
-          <div style={{ marginTop: '0.75rem', borderTop: '1px solid rgba(255, 255, 255, 0.1)', paddingTop: '0.6rem' }}>
+          <div style={{ marginTop: '0.75rem', borderTop: '1px solid var(--border-color)', paddingTop: '0.6rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-              <span style={{ fontSize: '0.78rem', fontWeight: 700, color: searchResults.length > 0 ? '#10b981' : '#ef4444' }}>
-                {searchResults.length > 0 ? `✅ Jumpa ${searchResults.length} padanan lot` : '❌ Tiada lot ditemui'}
+              <span style={{ fontSize: '0.78rem', fontWeight: 600, color: searchResults.length > 0 ? '#10b981' : '#f87171', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                {searchResults.length > 0 ? (
+                  <><CheckCircle2 size={14} /> Jumpa {searchResults.length} padanan lot</>
+                ) : (
+                  <><AlertCircle size={14} /> Tiada lot ditemui</>
+                )}
               </span>
             </div>
 
             {searchResults.length === 0 ? (
-              <div style={{ fontSize: '0.75rem', color: '#cbd5e1', background: 'rgba(239, 68, 68, 0.1)', padding: '0.5rem', borderRadius: '6px', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
-                Tiada lot ditemui untuk "{searchTerm}". Sila klik mana-mana sampel butang carian di atas (seperti <strong>PW2163</strong> atau <strong>Lot 3481</strong>) untuk menguji.
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', background: 'rgba(239, 68, 68, 0.08)', padding: '0.5rem', borderRadius: '4px', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
+                Tiada lot ditemui untuk "{searchTerm}". Sila klik sampel carian di atas untuk menguji.
               </div>
             ) : (
               <div style={{ maxHeight: '240px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '0.4rem', paddingRight: '0.2rem' }}>
@@ -171,22 +165,22 @@ export default function SearchPanel({ onSelectLocation, onSelectSearchResult }) 
                     key={res.id}
                     onClick={() => handleResultClick(res)}
                     style={{
-                      background: activeResultId === res.id ? 'rgba(59, 130, 246, 0.25)' : 'rgba(255, 255, 255, 0.04)',
-                      border: activeResultId === res.id ? '1px solid #3b82f6' : '1px solid rgba(255, 255, 255, 0.08)',
+                      background: activeResultId === res.id ? 'rgba(59, 130, 246, 0.2)' : 'rgba(15, 23, 42, 0.6)',
+                      border: activeResultId === res.id ? '1px solid #3b82f6' : '1px solid var(--border-color)',
                       borderRadius: '6px',
                       padding: '0.5rem 0.6rem',
                       cursor: 'pointer',
                       transition: 'all 0.15s ease'
                     }}
                   >
-                    <div style={{ fontWeight: 700, fontSize: '0.82rem', color: activeResultId === res.id ? '#60a5fa' : '#f8fafc' }}>
+                    <div style={{ fontWeight: 600, fontSize: '0.8rem', color: activeResultId === res.id ? '#60a5fa' : '#f8fafc' }}>
                       {res.title}
                     </div>
-                    <div style={{ fontSize: '0.72rem', color: '#94a3b8', marginTop: '0.15rem' }}>
+                    <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>
                       {res.subtitle}
                     </div>
-                    <div style={{ fontSize: '0.7rem', color: '#38bdf8', marginTop: '0.2rem', display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
-                      <CheckCircle2 size={11} /> Klik untuk sorot & fokus dalam peta
+                    <div style={{ fontSize: '0.68rem', color: '#38bdf8', marginTop: '0.2rem', display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
+                      <CheckCircle2 size={11} /> Sorot & sorot fokus dalam peta
                     </div>
                   </div>
                 ))}
@@ -199,7 +193,7 @@ export default function SearchPanel({ onSelectLocation, onSelectSearchResult }) 
       {/* Quick Jump to District */}
       <div className="card-section">
         <div className="card-title">
-          <MapPin size={18} color="#10b981" /> Navigasi Daerah N.S.
+          <MapPin size={16} color="#10b981" /> Navigasi Daerah N.S.
         </div>
         <div className="form-group">
           <label className="form-label">Pilih Daerah:</label>
@@ -219,7 +213,7 @@ export default function SearchPanel({ onSelectLocation, onSelectSearchResult }) 
       {/* Coordinate Input */}
       <div className="card-section">
         <div className="card-title">
-          <Navigation size={18} color="#3b82f6" /> Carian Koordinat (WGS84)
+          <Navigation size={16} color="#3b82f6" /> Carian Koordinat (WGS84)
         </div>
         <form onSubmit={handleCoordinateSearch}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
@@ -228,7 +222,7 @@ export default function SearchPanel({ onSelectLocation, onSelectSearchResult }) 
               <input 
                 type="number" 
                 step="any"
-                className="form-input" 
+                className="form-input mono" 
                 placeholder="Cth: 2.7258" 
                 value={latInput}
                 onChange={(e) => setLatInput(e.target.value)}
@@ -239,7 +233,7 @@ export default function SearchPanel({ onSelectLocation, onSelectSearchResult }) 
               <input 
                 type="number" 
                 step="any"
-                className="form-input" 
+                className="form-input mono" 
                 placeholder="Cth: 101.9424" 
                 value={lngInput}
                 onChange={(e) => setLngInput(e.target.value)}
@@ -254,3 +248,4 @@ export default function SearchPanel({ onSelectLocation, onSelectSearchResult }) 
     </div>
   );
 }
+

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Download, FileText, Compass, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { Download, FileText, PanelLeftClose, PanelLeftOpen, Map, Building2, Trees, Waves, Sprout, Mountain, Sun, Moon } from 'lucide-react';
 
 export default function Header({ 
   onOpenQgisModal, 
@@ -7,8 +7,19 @@ export default function Header({
   isSidebarOpen, 
   setIsSidebarOpen,
   selectedDaerah,
-  onSelectDaerah
+  onSelectDaerah,
+  theme = 'light',
+  onToggleTheme
 }) {
+  const districtList = [
+    { id: 'all', label: 'Semua Daerah', icon: Map },
+    { id: 'seremban', label: 'Seremban', icon: Building2 },
+    { id: 'jempol', label: 'Jempol', icon: Trees },
+    { id: 'pd', label: 'Port Dickson', icon: Waves },
+    { id: 'rembau', label: 'Rembau', icon: Sprout },
+    { id: 'tampin', label: 'Tampin', icon: Mountain }
+  ];
+
   return (
     <header className="app-header">
       <div className="brand-section">
@@ -18,7 +29,7 @@ export default function Header({
           title={isSidebarOpen ? "Sembunyikan Sidebar" : "Buka Sidebar"}
           aria-label={isSidebarOpen ? "Sembunyikan sidebar" : "Buka sidebar"}
         >
-          {isSidebarOpen ? <PanelLeftClose size={20} /> : <PanelLeftOpen size={20} />}
+          {isSidebarOpen ? <PanelLeftClose size={18} /> : <PanelLeftOpen size={18} />}
         </button>
 
         {/* Official JUPEM Logo Badge */}
@@ -32,57 +43,57 @@ export default function Header({
 
         <div className="brand-copy">
           <div className="brand-title">MyRizab</div>
-          <div className="brand-subtitle">Portal Tanah Rizab Negeri Sembilan (TRM • Hutan • Orang Asli)</div>
+          <div className="brand-subtitle">Portal Spasial Tanah Rizab Negeri Sembilan</div>
         </div>
       </div>
 
       <div className="header-badges">
-        {/* Quick Daerah Selector */}
+        {/* Clean District Selector Segmented Pills */}
         <div className="district-selector" aria-label="Pilih daerah">
-          {[
-            { id: 'all', label: '🗺️ Semua' },
-            { id: 'seremban', label: '🏙️ Seremban' },
-            { id: 'jempol', label: '🌲 Jempol' },
-            { id: 'pd', label: '🏖️ Port Dickson' },
-            { id: 'rembau', label: '🌾 Rembau' },
-            { id: 'tampin', label: '⛰️ Tampin' }
-          ].map(d => (
-            <button
-              key={d.id}
-              onClick={() => onSelectDaerah && onSelectDaerah(d.id)}
-              className={`district-btn ${selectedDaerah === d.id ? 'active' : ''}`}
-              style={{
-                fontWeight: selectedDaerah === d.id ? 700 : 500,
-              }}
-            >
-              {d.label}
-            </button>
-          ))}
+          {districtList.map(d => {
+            const IconComponent = d.icon;
+            return (
+              <button
+                key={d.id}
+                onClick={() => onSelectDaerah && onSelectDaerah(d.id)}
+                className={`district-btn ${selectedDaerah === d.id ? 'active' : ''}`}
+              >
+                <IconComponent size={13} />
+                <span>{d.label}</span>
+              </button>
+            );
+          })}
         </div>
 
-        <div className="badge-gmaps">
-          🗺️ Google Maps Powered
-        </div>
-        <div className="badge-qgis">
-          ⚡ QGIS Ready
-        </div>
+        <div className="header-actions">
+          {/* Theme Toggle Button (Light/Dark Mode) */}
+          <button 
+            onClick={onToggleTheme}
+            className="theme-toggle-btn"
+            title={theme === 'light' ? "Tukar ke Mod Gelap (Dark Mode)" : "Tukar ke Mod Terang (Light Mode)"}
+            aria-label="Tukar Tema"
+          >
+            {theme === 'light' ? <Moon size={15} /> : <Sun size={15} />}
+            <span className="theme-toggle-text">{theme === 'light' ? "Dark Mode" : "Light Mode"}</span>
+          </button>
 
-        <button 
-          onClick={onOpenQgisModal}
-          className="btn-secondary header-action-btn"
-          style={{ width: 'auto', padding: '0.4rem 0.75rem', fontSize: '0.75rem' }}
-        >
-          <Download size={14} /> Integrasi QGIS
-        </button>
+          <button 
+            onClick={onOpenQgisModal}
+            className="btn-header-action btn-secondary"
+          >
+            <Download size={14} /> <span>QGIS Export</span>
+          </button>
 
-        <button 
-          onClick={onOpenReportModal}
-          className="btn-primary header-action-btn"
-          style={{ width: 'auto', padding: '0.4rem 0.75rem', fontSize: '0.75rem' }}
-        >
-          <FileText size={14} /> Laporan PDF
-        </button>
+          <button 
+            onClick={onOpenReportModal}
+            className="btn-header-action btn-primary"
+          >
+            <FileText size={14} /> <span>Laporan PDF</span>
+          </button>
+        </div>
       </div>
     </header>
   );
 }
+
+
