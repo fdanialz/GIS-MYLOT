@@ -31,3 +31,4 @@ public/data/*/V_TRANSITTION_STN_point.json
 *.njsproj
 *.sln
 *.sw?
+.runtime/ 
