@@ -187,6 +187,8 @@ export default function MapViewer({
     return bounds.contains(centroid);
   };
 
+  const [showMobileBasemaps, setShowMobileBasemaps] = useState(false);
+
   return (
     <div className={`map-container ${isSidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
       {/* Dense Layer Zoom Warning Overlay */}
@@ -197,9 +199,10 @@ export default function MapViewer({
         </div>
       )}
 
-      {/* Clean GIS Floating Basemap Bar */}
+      {/* Floating Basemap Controls (Desktop & Mobile Popover) */}
       <div className="map-floating-bar">
-        <div className="basemap-selector">
+        {/* Desktop Horizontal Basemap Selector */}
+        <div className="basemap-selector desktop-only">
           <button 
             className={`basemap-btn ${basemap === 'esri_imagery' ? 'active' : ''}`}
             onClick={() => setBasemap('esri_imagery')}
@@ -244,7 +247,54 @@ export default function MapViewer({
             {isFullscreen ? <Minimize size={14} /> : <Maximize size={14} />}
           </button>
         </div>
+
+        {/* Mobile Floating Compact Basemap Icon Switcher */}
+        <div className="mobile-basemap-wrap mobile-only">
+          <button
+            className="mobile-basemap-toggle-btn"
+            onClick={() => setShowMobileBasemaps(!showMobileBasemaps)}
+            title="Tukar Peta Asas"
+          >
+            <Layers size={16} />
+          </button>
+
+          {showMobileBasemaps && (
+            <div className="mobile-basemap-popover">
+              <button 
+                className={`mobile-basemap-item ${basemap === 'esri_imagery' ? 'active' : ''}`}
+                onClick={() => { setBasemap('esri_imagery'); setShowMobileBasemaps(false); }}
+              >
+                <Globe size={14} /> <span>ESRI Satelit</span>
+              </button>
+              <button 
+                className={`mobile-basemap-item ${basemap === 'gmaps_hybrid' ? 'active' : ''}`}
+                onClick={() => { setBasemap('gmaps_hybrid'); setShowMobileBasemaps(false); }}
+              >
+                <Layers size={14} /> <span>Google Hybrid</span>
+              </button>
+              <button 
+                className={`mobile-basemap-item ${basemap === 'gmaps_satellite' ? 'active' : ''}`}
+                onClick={() => { setBasemap('gmaps_satellite'); setShowMobileBasemaps(false); }}
+              >
+                <Compass size={14} /> <span>Google Satelit</span>
+              </button>
+              <button 
+                className={`mobile-basemap-item ${basemap === 'gmaps_roadmap' ? 'active' : ''}`}
+                onClick={() => { setBasemap('gmaps_roadmap'); setShowMobileBasemaps(false); }}
+              >
+                <Globe size={14} /> <span>Google Peta</span>
+              </button>
+              <button 
+                className={`mobile-basemap-item ${basemap === 'carto_dark' ? 'active' : ''}`}
+                onClick={() => { setBasemap('carto_dark'); setShowMobileBasemaps(false); }}
+              >
+                <Moon size={14} /> <span>Dark GIS</span>
+              </button>
+            </div>
+          )}
+        </div>
       </div>
+
 
       <MapContainer 
         center={NEGERI_SEMBILAN_BOUNDS.center} 

@@ -200,9 +200,18 @@ export default function App() {
           />
         )}
 
-        {/* Left Sidebar Control Panel */}
+        {/* Left Sidebar / Mobile Bottom Sheet Control Panel */}
         <aside className={`app-sidebar ${isSidebarOpen ? 'open' : 'closed'}`}>
+          <div 
+            className="mobile-drawer-handle mobile-only" 
+            onClick={() => setIsSidebarOpen(false)}
+            title="Tutup Bottom Sheet"
+          >
+            <div className="mobile-drawer-pill" />
+          </div>
+
           <nav className="sidebar-tabs">
+
             <button 
               className={`tab-btn ${activeTab === 'layers' ? 'active' : ''}`}
               onClick={() => setActiveTab('layers')}
