@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { MapContainer, TileLayer, Polygon, Polyline, Popup, Circle, Marker, useMap, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -29,7 +29,7 @@ function MapController({ center, zoom, isSidebarOpen, isFullscreen }) {
     map.invalidateSize();
     const timer = setTimeout(() => {
       map.invalidateSize();
-    }, 320);
+    }, 300);
     return () => clearTimeout(timer);
   }, [isSidebarOpen, isFullscreen, map]);
 
@@ -78,11 +78,12 @@ export default function MapViewer({
   const [basemap, setBasemap] = useState('esri_imagery');
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [serembanGeoData, setSerembanGeoData] = useState({});
-  const [loadingState, setLoadingState] = useState({});
   const [cursorCoords, setCursorCoords] = useState({ lat: 2.7247, lng: 101.9378 });
   const [currentZoom, setCurrentZoom] = useState(NEGERI_SEMBILAN_BOUNDS.zoom);
   const [currentBounds, setCurrentBounds] = useState(null);
 
+  // Track pending/loaded layer fetches without triggering re-render loops
+  const loadedLayersRef = useRef({});
 
   // Monitor fullscreen change events
   useEffect(() => {
@@ -93,20 +94,24 @@ export default function MapViewer({
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
 
-  // Fetch GeoJSON for enabled layers across all Daerah
+  // Fetch GeoJSON for enabled layers across all Daerah (Safe from infinite re-render loops)
   useEffect(() => {
     ALL_LAYERS_CONFIG.forEach(cfg => {
-      if (layers[cfg.id] && !serembanGeoData[cfg.id] && !loadingState[cfg.id]) {
-        setLoadingState(prev => ({ ...prev, [cfg.id]: true }));
+      if (layers[cfg.id] && !serembanGeoData[cfg.id] && !loadedLayersRef.current[cfg.id]) {
+        loadedLayersRef.current[cfg.id] = true;
         fetchDaerahLayerData(cfg.daerah || 'seremban', cfg.file).then(data => {
           if (data) {
             setSerembanGeoData(prev => ({ ...prev, [cfg.id]: data }));
+          } else {
+            // Allow retry if network or path failed
+            delete loadedLayersRef.current[cfg.id];
           }
-          setLoadingState(prev => ({ ...prev, [cfg.id]: false }));
         });
       }
     });
-  }, [layers, serembanGeoData, loadingState]);
+  }, [layers]);
+
+
 
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
@@ -152,20 +157,58 @@ export default function MapViewer({
     }
   };
 
+  // On-the-fly Cassini-Soldner to WGS84 Lat/Lng converter for legacy datasets
+  const toLatLonPoint = (pt) => {
+    if (!pt || pt.length < 2) return [0, 0];
+    const x = pt[0], y = pt[1];
+    if (Math.abs(x) > 180 || Math.abs(y) > 180) {
+      const lat0 = 2.7121205083 * Math.PI / 180;
+      const lon0 = 101.9397026917 * Math.PI / 180;
+      const a = 6378137.0, f = 1 / 298.2572221008916;
+      const e2 = 2 * f - f * f;
+      const M0 = a * ((1 - e2 / 4 - 3 * e2 * e2 / 64 - 5 * e2 * e2 * e2 / 256) * lat0
+        - (3 * e2 / 8 + 3 * e2 * e2 / 32 + 45 * e2 * e2 * e2 / 1024) * Math.sin(2 * lat0)
+        + (15 * e2 * e2 / 256 + 45 * e2 * e2 * e2 / 1024) * Math.sin(4 * lat0)
+        - (35 * e2 * e2 * e2 / 3072) * Math.sin(6 * lat0));
+      const M1 = M0 + y;
+      const mu1 = M1 / (a * (1 - e2 / 4 - 3 * e2 * e2 / 64 - 5 * e2 * e2 * e2 / 256));
+      const e1 = (1 - Math.sqrt(1 - e2)) / (1 + Math.sqrt(1 - e2));
+      const phi1 = mu1
+        + (3 * e1 / 2 - 27 * e1 * e1 * e1 / 32) * Math.sin(2 * mu1)
+        + (21 * e1 * e1 / 16 - 55 * e1 * e1 * e1 * e1 / 32) * Math.sin(4 * mu1)
+        + (151 * e1 * e1 * e1 / 96) * Math.sin(6 * mu1);
+      const N1 = a / Math.sqrt(1 - e2 * Math.sin(phi1) * Math.sin(phi1));
+      const T1 = Math.tan(phi1) * Math.tan(phi1);
+      const R1 = a * (1 - e2) / Math.pow(1 - e2 * Math.sin(phi1) * Math.sin(phi1), 1.5);
+      const D = x / N1;
+      const lat = phi1 - (N1 * Math.tan(phi1) / R1) * (
+        D * D / 2 - (5 + 3 * T1 + 10 * (e2 / (1 - e2)) - 4 * (e2 / (1 - e2)) * (e2 / (1 - e2)) - 9 * (e2 / (1 - e2))) * Math.pow(D, 4) / 24
+        + (61 + 90 * T1 + 298 * (e2 / (1 - e2)) + 45 * T1 * T1 - 252 * (e2 / (1 - e2))) * Math.pow(D, 6) / 720
+      );
+      const lon = lon0 + (
+        D - (1 + 2 * T1 + (e2 / (1 - e2))) * Math.pow(D, 3) / 6
+        + (5 - 2 * (e2 / (1 - e2)) + 28 * T1 - 3 * (e2 / (1 - e2)) * (e2 / (1 - e2)) + 8 * (e2 / (1 - e2)) + 24 * T1 * T1) * Math.pow(D, 5) / 120
+      ) / Math.cos(phi1);
+      return [lat * 180 / Math.PI, lon * 180 / Math.PI];
+    }
+    return [y, x];
+  };
+
   // Parse GeoJSON coordinates -> Leaflet coordinates
   const parseCoordinates = (coords, geomType) => {
     if (!coords) return [];
     if (geomType === 'Polygon') {
-      return coords[0].map(pt => [pt[1], pt[0]]);
+      return coords[0].map(pt => toLatLonPoint(pt));
     } else if (geomType === 'MultiPolygon') {
-      return coords.map(poly => poly[0].map(pt => [pt[1], pt[0]]));
+      return coords.map(poly => poly[0].map(pt => toLatLonPoint(pt)));
     } else if (geomType === 'LineString' || geomType === 'Polyline') {
-      return coords.map(pt => [pt[1], pt[0]]);
+      return coords.map(pt => toLatLonPoint(pt));
     } else if (geomType === 'MultiLineString') {
-      return coords.map(line => line.map(pt => [pt[1], pt[0]]));
+      return coords.map(line => line.map(pt => toLatLonPoint(pt)));
     }
     return [];
   };
+
 
   const getCentroid = (coords, geomType) => {
     const pts = parseCoordinates(coords, geomType);
@@ -424,13 +467,13 @@ export default function MapViewer({
           const geojson = serembanGeoData[cfg.id];
           if (!geojson || !geojson.features) return null;
 
-          // Performance Threshold Checks for Ultra-Dense Layers
-          const isDensePolyline = cfg.type === 'polyline' || cfg.id.includes('Polyline') || cfg.id.includes('bdy') || cfg.id.includes('Bdy');
-          const isDenseLotPolygon = cfg.id.startsWith('ndcdbLot');
+          // Performance Threshold Checks for Ultra-Dense Datasets (200k+ polylines)
+          const isDensePolyline = cfg.type === 'polyline' || cfg.id.includes('Polyline') || cfg.id === 'ndcdbBdyPd';
+          const isDenseLotPolygon = cfg.id.startsWith('ndcdbLot') || geojson.features.length > 20000;
 
-          // Prevent DOM overload: require Zoom >= 14 for dense polylines (229k features), Zoom >= 12 for dense lot polygons
+          // Require Zoom >= 14 for 229k polyline dataset, Zoom >= 11 for 50k+ lot polygons
           if (isDensePolyline && currentZoom < 14) return null;
-          if (isDenseLotPolygon && currentZoom < 12) return null;
+          if (isDenseLotPolygon && geojson.features.length > 50000 && currentZoom < 11) return null;
 
           return geojson.features.map((f, idx) => {
             if (!f.geometry) return null;
@@ -441,6 +484,7 @@ export default function MapViewer({
             if (currentBounds && (isDensePolyline || isDenseLotPolygon || geojson.features.length > 5000)) {
               if (!isFeatureInViewport(centroid, currentBounds)) return null;
             }
+
 
             const positions = parseCoordinates(f.geometry.coordinates, geomType);
             const p = f.properties || {};

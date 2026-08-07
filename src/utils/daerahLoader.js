@@ -603,19 +603,49 @@ export async function fetchDaerahLayerData(daerah, fileName) {
     return cache[cacheKey];
   }
 
-  try {
-    const baseUrl = import.meta.env.BASE_URL || './';
-    const cleanBase = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
-    const res = await fetch(`${cleanBase}data/${daerah}/${fileName}`);
-    if (!res.ok) throw new Error(`HTTP error ${res.status}`);
-    const data = await res.json();
-    cache[cacheKey] = data;
-    return data;
-  } catch (err) {
-    console.error(`Error loading ${daerah} layer ${fileName}:`, err);
-    return null;
+  const encodedFileName = encodeURIComponent(fileName);
+  const rawBase = import.meta.env.BASE_URL || './';
+  const cleanBase = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
+
+  // Candidate URLs to guarantee layer loading across GitHub Pages, Vercel, Netlify, or custom subpaths
+  const candidateUrls = [
+    `${cleanBase}data/${daerah}/${encodedFileName}`,
+    `./data/${daerah}/${encodedFileName}`,
+    `data/${daerah}/${encodedFileName}`,
+    `./data/${daerah}/${fileName}`,
+    `data/${daerah}/${fileName}`
+  ];
+
+  if (typeof window !== 'undefined' && window.location && window.location.pathname) {
+    const path = window.location.pathname;
+    const dirPath = path.endsWith('/') ? path : `${path.substring(0, path.lastIndexOf('/') + 1)}`;
+    candidateUrls.unshift(`${dirPath}data/${daerah}/${encodedFileName}`);
   }
+
+  for (const url of candidateUrls) {
+    try {
+      const res = await fetch(url);
+      if (res.ok) {
+        const contentType = res.headers.get('content-type');
+        if (contentType && contentType.includes('text/html')) {
+          // If server returned 200 SPA fallback HTML, skip it
+          continue;
+        }
+        const data = await res.json();
+        if (data && data.features) {
+          cache[cacheKey] = data;
+          return data;
+        }
+      }
+    } catch (e) {
+      // Continue trying next URL candidate
+    }
+  }
+
+  console.error(`Gagal memuatkan lapisan spasial ${daerah}/${fileName}`);
+  return null;
 }
+
 
 // Backward compatibility alias
 export async function fetchSerembanLayerData(fileName) {
