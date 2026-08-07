@@ -66,6 +66,7 @@ export default function LayerControl({
         <div className="layer-items-list">
           {configList.map(cfg => {
             const isChecked = !!layers[cfg.id];
+            const isDense = cfg.type === 'polyline' || cfg.id.includes('Polyline') || cfg.id === 'ndcdbBdyPd';
             const count = statsDict && statsDict[cfg.id] !== undefined 
               ? `${statsDict[cfg.id]} Rekod Spasial` 
               : cfg.description;
@@ -77,13 +78,19 @@ export default function LayerControl({
                   <div>
                     <div className="layer-name">
                       {getIconForLayer(cfg.id)}
-                      {cfg.name}
+                      <span>{cfg.name}</span>
+                      {isDense && (
+                        <span style={{ fontSize: '0.62rem', background: 'rgba(59, 130, 246, 0.15)', color: 'var(--accent-blue)', padding: '0.1rem 0.35rem', borderRadius: '3px', fontWeight: 600 }}>
+                          Z14+
+                        </span>
+                      )}
                     </div>
                     <div className="layer-count">
                       {count}
                     </div>
                   </div>
                 </div>
+
                 <label className="switch">
                   <input 
                     type="checkbox" 

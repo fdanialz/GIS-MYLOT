@@ -36,9 +36,9 @@ function MapController({ center, zoom, isSidebarOpen, isFullscreen }) {
   return null;
 }
 
-// Listener for map click, mousemove, and zoom events
-function MapEventsHandler({ onMapClick, onCursorMove, onZoomChange }) {
-  useMapEvents({
+// Listener for map click, mousemove, zoom, and bounds events
+function MapEventsHandler({ onMapClick, onCursorMove, onZoomChange, onBoundsChange }) {
+  const map = useMapEvents({
     click(e) {
       onMapClick(e.latlng.lat, e.latlng.lng);
     },
@@ -48,11 +48,21 @@ function MapEventsHandler({ onMapClick, onCursorMove, onZoomChange }) {
       }
     },
     zoomend(e) {
-      if (onZoomChange) {
-        onZoomChange(e.target.getZoom());
-      }
+      if (onZoomChange) onZoomChange(e.target.getZoom());
+      if (onBoundsChange) onBoundsChange(e.target.getBounds());
+    },
+    moveend(e) {
+      if (onBoundsChange) onBoundsChange(e.target.getBounds());
     }
   });
+
+  // Initial bounds report
+  useEffect(() => {
+    if (onBoundsChange) {
+      onBoundsChange(map.getBounds());
+    }
+  }, [map, onBoundsChange]);
+
   return null;
 }
 
@@ -71,6 +81,8 @@ export default function MapViewer({
   const [loadingState, setLoadingState] = useState({});
   const [cursorCoords, setCursorCoords] = useState({ lat: 2.7247, lng: 101.9378 });
   const [currentZoom, setCurrentZoom] = useState(NEGERI_SEMBILAN_BOUNDS.zoom);
+  const [currentBounds, setCurrentBounds] = useState(null);
+
 
   // Monitor fullscreen change events
   useEffect(() => {
@@ -169,8 +181,22 @@ export default function MapViewer({
     return [sumLat / flatPts.length, sumLng / flatPts.length];
   };
 
+  // Helper check if feature centroid falls within active viewport bounds
+  const isFeatureInViewport = (centroid, bounds) => {
+    if (!bounds || !centroid) return true;
+    return bounds.contains(centroid);
+  };
+
   return (
     <div className={`map-container ${isSidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
+      {/* Dense Layer Zoom Warning Overlay */}
+      {Object.keys(layers).some(key => layers[key] && (key.includes('Polyline') || key.includes('Bdy') || key === 'ndcdbBdyPd')) && currentZoom < 14 && (
+        <div className="map-zoom-notice">
+          <Info size={14} color="#3b82f6" />
+          <span>Sila zum masuk (Zoom ≥ 14) untuk paparan garisan sempadan polyline (229k rekod).</span>
+        </div>
+      )}
+
       {/* Clean GIS Floating Basemap Bar */}
       <div className="map-floating-bar">
         <div className="basemap-selector">
@@ -223,6 +249,7 @@ export default function MapViewer({
       <MapContainer 
         center={NEGERI_SEMBILAN_BOUNDS.center} 
         zoom={NEGERI_SEMBILAN_BOUNDS.zoom} 
+        preferCanvas={true}
         style={{ width: '100%', height: '100%' }}
       >
         <TileLayer 
@@ -251,6 +278,7 @@ export default function MapViewer({
           onMapClick={onMapClick} 
           onCursorMove={(lat, lng) => setCursorCoords({ lat, lng })}
           onZoomChange={(zoom) => setCurrentZoom(zoom)}
+          onBoundsChange={(bounds) => setCurrentBounds(bounds)}
         />
 
         {/* Selected / Searched Location Highlight Polygon */}
@@ -308,7 +336,6 @@ export default function MapViewer({
           </Marker>
         )}
 
-
         {/* Buffer Circle Overlay */}
         {bufferData && (
           <Circle 
@@ -329,17 +356,31 @@ export default function MapViewer({
           </Circle>
         )}
 
-        {/* RENDER DYNAMIC SHP LAYERS (SEREMBAN & JEMPOL) */}
+        {/* RENDER DYNAMIC SHP LAYERS */}
         {ALL_LAYERS_CONFIG.map(cfg => {
           if (!layers[cfg.id]) return null;
           const geojson = serembanGeoData[cfg.id];
           if (!geojson || !geojson.features) return null;
 
+          // Performance Threshold Checks for Ultra-Dense Layers
+          const isDensePolyline = cfg.type === 'polyline' || cfg.id.includes('Polyline') || cfg.id.includes('bdy') || cfg.id.includes('Bdy');
+          const isDenseLotPolygon = cfg.id.startsWith('ndcdbLot');
+
+          // Prevent DOM overload: require Zoom >= 14 for dense polylines (229k features), Zoom >= 12 for dense lot polygons
+          if (isDensePolyline && currentZoom < 14) return null;
+          if (isDenseLotPolygon && currentZoom < 12) return null;
+
           return geojson.features.map((f, idx) => {
             if (!f.geometry) return null;
             const geomType = f.geometry.type;
-            const positions = parseCoordinates(f.geometry.coordinates, geomType);
             const centroid = getCentroid(f.geometry.coordinates, geomType);
+
+            // Spatial Viewport Bounding Box Clipping: skip rendering features outside current screen viewport
+            if (currentBounds && (isDensePolyline || isDenseLotPolygon || geojson.features.length > 5000)) {
+              if (!isFeatureInViewport(centroid, currentBounds)) return null;
+            }
+
+            const positions = parseCoordinates(f.geometry.coordinates, geomType);
             const p = f.properties || {};
 
             // Common properties display format
@@ -347,6 +388,7 @@ export default function MapViewer({
 
             if (geomType === 'Polygon' || geomType === 'MultiPolygon') {
               return (
+
                 <Polygon
                   key={`${cfg.id}-${idx}`}
                   positions={positions}
