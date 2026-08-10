@@ -2,12 +2,11 @@ import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
 import LayerControl from './components/LayerControl';
 import SearchPanel from './components/SearchPanel';
-import SpatialAnalysis from './components/SpatialAnalysis';
-import QgisIntegration from './components/QgisIntegration';
+import ChatbotSorting from './components/ChatbotSorting';
 import Dashboard from './components/Dashboard';
 import MapViewer from './components/MapViewer';
 import ReportModal from './components/ReportModal';
-import { Layers, Search, Target, Cpu, BarChart3, PanelLeftOpen } from 'lucide-react';
+import { Layers, Search, BarChart3, PanelLeftOpen, Bot, X, ChevronDown } from 'lucide-react';
 import { SUMMARY_STATS_NS, RIZAB_MELAYU_NS, HUTAN_SIMPAN_NS, RIZAB_ORANG_ASLI_NS } from './data/negeriSembilanData';
 import {
   ALL_LAYERS_CONFIG,
@@ -39,9 +38,9 @@ export default function App() {
   );
   const [selectedDaerah, setSelectedDaerah] = useState('all'); // 'all', 'seremban', 'jempol', 'pd', 'rembau', 'tampin'
 
-  // Initialize layer states: all layers toggled OFF by default on load
+  // Initialize layer states: enable default layers from official JUPEM shapefile datasets
   const initialLayers = ALL_LAYERS_CONFIG.reduce((acc, cfg) => {
-    acc[cfg.id] = false;
+    acc[cfg.id] = !!cfg.defaultEnabled;
     return acc;
   }, {});
 
@@ -52,6 +51,7 @@ export default function App() {
   const [bufferData, setBufferData] = useState(null);
   const [customImportedData, setCustomImportedData] = useState(null);
   const [showReportModal, setShowReportModal] = useState(false);
+  const [isFloatingChatOpen, setIsFloatingChatOpen] = useState(false);
 
   // Handle map click
   const handleMapClick = (lat, lng) => {
@@ -61,9 +61,6 @@ export default function App() {
       zoom: 14,
       label: `Titik Dipilih (${lat.toFixed(4)}, ${lng.toFixed(4)})`
     });
-    if (activeTab !== 'analysis' && isSidebarOpen) {
-      setActiveTab('analysis');
-    }
   };
 
   // Handle Search Result Selection
@@ -185,6 +182,7 @@ export default function App() {
       <Header
         onOpenQgisModal={() => setActiveTab('qgis')}
         onOpenReportModal={() => setShowReportModal(true)}
+        onOpenChatbot={() => setIsFloatingChatOpen(prev => !prev)}
         isSidebarOpen={isSidebarOpen}
         setIsSidebarOpen={setIsSidebarOpen}
         selectedDaerah={selectedDaerah}
@@ -214,7 +212,6 @@ export default function App() {
           </div>
 
           <nav className="sidebar-tabs">
-
             <button
               className={`tab-btn ${activeTab === 'layers' ? 'active' : ''}`}
               onClick={() => setActiveTab('layers')}
@@ -226,18 +223,6 @@ export default function App() {
               onClick={() => setActiveTab('search')}
             >
               <Search size={16} /> Carian Lot
-            </button>
-            <button
-              className={`tab-btn ${activeTab === 'analysis' ? 'active' : ''}`}
-              onClick={() => setActiveTab('analysis')}
-            >
-              <Target size={16} /> Analisis
-            </button>
-            <button
-              className={`tab-btn ${activeTab === 'qgis' ? 'active' : ''}`}
-              onClick={() => setActiveTab('qgis')}
-            >
-              <Cpu size={16} /> QGIS
             </button>
             <button
               className={`tab-btn ${activeTab === 'dashboard' ? 'active' : ''}`}
@@ -272,19 +257,6 @@ export default function App() {
               />
             )}
 
-            {activeTab === 'analysis' && (
-              <SpatialAnalysis
-                clickedCoords={clickedCoords}
-                onBufferCreated={handleBufferCreated}
-              />
-            )}
-
-            {activeTab === 'qgis' && (
-              <QgisIntegration
-                onCustomDataImported={handleCustomDataImported}
-              />
-            )}
-
             {activeTab === 'dashboard' && (
               <Dashboard />
             )}
@@ -316,6 +288,61 @@ export default function App() {
           />
         </main>
       </div>
+
+      {/* Floating Bottom-Right Chatbot Wrapper */}
+      <div className="floating-bot-wrapper">
+        {/* Circular Floating Bot Avatar Button */}
+        {!isFloatingChatOpen && (
+          <div
+            className="bot-avatar-trigger"
+            onClick={() => setIsFloatingChatOpen(true)}
+            title="Buka Pembantu GIS & Sorting Lot"
+          >
+            <div className="bot-avatar-circle">
+              <Bot size={26} color="#ffffff" />
+              <span className="online-status-dot" />
+            </div>
+            <div className="bot-avatar-badge">
+              PEMBANTU GIS
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Floating Bottom-Right Chatbot Popup Window */}
+      {isFloatingChatOpen && (
+        <div className="floating-chat-window">
+          <div className="floating-chat-header">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+              <div className="header-avatar-circle">
+                <Bot size={18} color="#ffffff" />
+                <span className="online-status-dot-sm" />
+              </div>
+              <div>
+                <div style={{ fontWeight: 700, fontSize: '0.85rem', color: '#ffffff', lineHeight: 1.2 }}>
+                  Pembantu GIS MRIS
+                </div>
+                <div style={{ fontSize: '0.62rem', color: '#4ade80', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.25rem', marginTop: '0.1rem' }}>
+                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#4ade80', display: 'inline-block' }} /> ONLINE
+                </div>
+              </div>
+            </div>
+            <button
+              onClick={() => setIsFloatingChatOpen(false)}
+              className="chat-close-btn"
+              title="Minimakan / Tutup Chatbot"
+            >
+              <X size={18} />
+            </button>
+          </div>
+          <div className="floating-chat-body">
+            <ChatbotSorting
+              onSelectLocation={handleSelectLocation}
+              onSelectSearchResult={handleSelectSearchResult}
+            />
+          </div>
+        </div>
+      )}
 
       {/* Modal Report Window */}
       {showReportModal && (

@@ -3,7 +3,7 @@ import { MapContainer, TileLayer, Polygon, Polyline, Popup, Circle, Marker, useM
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { ExternalLink, MapPin, Maximize, Minimize, Info, Globe, Layers, Moon, Compass, Camera } from 'lucide-react';
-import { NEGERI_SEMBILAN_BOUNDS } from '../data/negeriSembilanData';
+import { NEGERI_SEMBILAN_BOUNDS, SEMPADAN_NEGERI_SEMBILAN } from '../data/negeriSembilanData';
 import { ALL_LAYERS_CONFIG, fetchDaerahLayerData } from '../utils/daerahLoader';
 import { getGoogleMapsUrl, getGoogleStreetViewUrl } from '../utils/spatialUtils';
 
@@ -372,6 +372,25 @@ export default function MapViewer({
           />
         )}
 
+        {/* Sempadan Rasmi Negeri Sembilan (Displayed by default on load) */}
+        <Polygon
+          positions={SEMPADAN_NEGERI_SEMBILAN.coordinates}
+          pathOptions={{
+            color: '#f59e0b',
+            fillColor: '#fef08a',
+            fillOpacity: 0.08,
+            weight: 3.5,
+            dashArray: '8, 6'
+          }}
+        >
+          <Popup>
+            <div style={{ padding: '0.2rem', textAlign: 'center' }}>
+              <strong style={{ color: '#d97706', fontSize: '0.85rem' }}>👑 Sempadan Rasmi Negeri Sembilan</strong>
+              <div style={{ fontSize: '0.72rem', color: '#64748b', marginTop: '0.2rem' }}>Sempadan Pentadbiran Negeri Sembilan Darul Khusus</div>
+            </div>
+          </Popup>
+        </Polygon>
+
         <MapController 
           center={selectedLocation ? selectedLocation.center : NEGERI_SEMBILAN_BOUNDS.center} 
           zoom={selectedLocation ? selectedLocation.zoom : NEGERI_SEMBILAN_BOUNDS.zoom} 
@@ -410,6 +429,21 @@ export default function MapViewer({
                 </div>
                 <div className="popup-body-text">
                   {selectedLocation.layerName && <div><strong>Lapisan:</strong> {selectedLocation.layerName}</div>}
+                  {selectedLocation.layerName && selectedLocation.layerName.toLowerCase().includes('pembatalan') && (
+                    <div style={{ background: 'rgba(239, 68, 68, 0.2)', color: '#f87171', border: '1px solid rgba(239, 68, 68, 0.4)', padding: '0.2rem 0.4rem', borderRadius: '4px', margin: '0.25rem 0', fontWeight: 600, fontSize: '0.72rem' }}>
+                      🔴 Status: Pembatalan Warta Rizab
+                    </div>
+                  )}
+                  {selectedLocation.layerName && selectedLocation.layerName.toLowerCase().includes('gantian') && (
+                    <div style={{ background: 'rgba(59, 130, 246, 0.2)', color: '#60a5fa', border: '1px solid rgba(59, 130, 246, 0.4)', padding: '0.2rem 0.4rem', borderRadius: '4px', margin: '0.25rem 0', fontWeight: 600, fontSize: '0.72rem' }}>
+                      🔵 Status: Tanah Rizab Melayu Penggantian
+                    </div>
+                  )}
+                  {selectedLocation.layerName && (selectedLocation.layerName.toLowerCase().includes('malay') || selectedLocation.layerName.toLowerCase().includes('rizab melayu')) && !selectedLocation.layerName.toLowerCase().includes('pembatalan') && !selectedLocation.layerName.toLowerCase().includes('gantian') && (
+                    <div style={{ background: 'rgba(234, 179, 8, 0.2)', color: '#facc15', border: '1px solid rgba(234, 179, 8, 0.4)', padding: '0.2rem 0.4rem', borderRadius: '4px', margin: '0.25rem 0', fontWeight: 600, fontSize: '0.72rem' }}>
+                      🟡 Status: Warta Tanah Rizab Melayu
+                    </div>
+                  )}
                   {selectedLocation.properties && selectedLocation.properties.UPI && <div><strong>UPI:</strong> <code className="mono-val">{selectedLocation.properties.UPI}</code></div>}
                   {selectedLocation.properties && selectedLocation.properties.NOPW && <div><strong>NOPW:</strong> {selectedLocation.properties.NOPW}</div>}
                   {selectedLocation.properties && selectedLocation.properties.PA && <div><strong>PA:</strong> {selectedLocation.properties.PA}</div>}

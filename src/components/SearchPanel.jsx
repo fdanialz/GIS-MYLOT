@@ -67,7 +67,61 @@ export default function SearchPanel({ onSelectLocation, onSelectSearchResult }) 
     executeSearch(term);
   };
 
+  const getCrossReferenceBadge = (res) => {
+    const lId = (res.layerId || '').toLowerCase();
+    const lName = (res.layerName || '').toLowerCase();
+    
+    if (lId.includes('pembatalan') || lName.includes('pembatalan')) {
+      return (
+        <div style={{ fontSize: '0.66rem', background: 'rgba(239, 68, 68, 0.2)', color: '#f87171', border: '1px solid rgba(239, 68, 68, 0.4)', padding: '0.15rem 0.35rem', borderRadius: '4px', marginTop: '0.25rem', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '0.2rem' }}>
+          🔴 Silang Rujukan: Pembatalan Warta Rizab Melayu
+        </div>
+      );
+    }
+    if (lId.includes('gantian') || lName.includes('penggantian')) {
+      return (
+        <div style={{ fontSize: '0.66rem', background: 'rgba(59, 130, 246, 0.2)', color: '#60a5fa', border: '1px solid rgba(59, 130, 246, 0.4)', padding: '0.15rem 0.35rem', borderRadius: '4px', marginTop: '0.25rem', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '0.2rem' }}>
+          🔵 Silang Rujukan: Tanah Rizab Melayu Penggantian
+        </div>
+      );
+    }
+    if (lId.includes('malay') || lId.includes('trm') || lName.includes('rizab melayu')) {
+      return (
+        <div style={{ fontSize: '0.66rem', background: 'rgba(234, 179, 8, 0.2)', color: '#facc15', border: '1px solid rgba(234, 179, 8, 0.4)', padding: '0.15rem 0.35rem', borderRadius: '4px', marginTop: '0.25rem', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '0.2rem' }}>
+          🟡 Silang Rujukan: Warta Tanah Rizab Melayu
+        </div>
+      );
+    }
+    if (lId.includes('forest') || lName.includes('hutan')) {
+      return (
+        <div style={{ fontSize: '0.66rem', background: 'rgba(34, 197, 94, 0.2)', color: '#4ade80', border: '1px solid rgba(34, 197, 94, 0.4)', padding: '0.15rem 0.35rem', borderRadius: '4px', marginTop: '0.25rem', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '0.2rem' }}>
+          🟢 Silang Rujukan: Zon Hutan Simpan Kekal
+        </div>
+      );
+    }
+    if (lId.includes('aborigine') || lName.includes('orang asli')) {
+      return (
+        <div style={{ fontSize: '0.66rem', background: 'rgba(168, 85, 247, 0.2)', color: '#c084fc', border: '1px solid rgba(168, 85, 247, 0.4)', padding: '0.15rem 0.35rem', borderRadius: '4px', marginTop: '0.25rem', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '0.2rem' }}>
+          🟣 Silang Rujukan: Zon Rizab Orang Asli
+        </div>
+      );
+    }
+    return (
+      <div style={{ fontSize: '0.66rem', background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', border: '1px solid rgba(56, 189, 248, 0.3)', padding: '0.15rem 0.35rem', borderRadius: '4px', marginTop: '0.25rem', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '0.2rem' }}>
+        📍 Lot Spasial Kadaster / Warta
+      </div>
+    );
+  };
+
+  const trackClickAnalytics = () => {
+    try {
+      const storedClicks = parseInt(localStorage.getItem('mris_click_count') || '3892', 10);
+      localStorage.setItem('mris_click_count', (storedClicks + 1).toString());
+    } catch (e) {}
+  };
+
   const handleResultClick = (res) => {
+    trackClickAnalytics();
     setActiveResultId(res.id);
     if (onSelectSearchResult) {
       onSelectSearchResult(res);
@@ -179,8 +233,9 @@ export default function SearchPanel({ onSelectLocation, onSelectSearchResult }) 
                     <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>
                       {res.subtitle}
                     </div>
-                    <div style={{ fontSize: '0.68rem', color: '#38bdf8', marginTop: '0.2rem', display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
-                      <CheckCircle2 size={11} /> Sorot & sorot fokus dalam peta
+                    {getCrossReferenceBadge(res)}
+                    <div style={{ fontSize: '0.68rem', color: '#38bdf8', marginTop: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
+                      <CheckCircle2 size={11} /> Sorot & fokus dalam peta
                     </div>
                   </div>
                 ))}

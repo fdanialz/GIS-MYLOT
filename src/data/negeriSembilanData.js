@@ -3,7 +3,7 @@
 
 export const NEGERI_SEMBILAN_BOUNDS = {
   center: [2.7258, 101.9424],
-  zoom: 11,
+  zoom: 10,
   districts: [
     'Seremban',
     'Port Dickson',
@@ -12,6 +12,33 @@ export const NEGERI_SEMBILAN_BOUNDS = {
     'Kuala Pilah',
     'Rembau',
     'Tampin'
+  ]
+};
+
+// Sempadan Rasmi Negeri Sembilan Darul Khusus
+export const SEMPADAN_NEGERI_SEMBILAN = {
+  type: 'Feature',
+  properties: {
+    nama: 'Sempadan Negeri Sembilan Darul Khusus',
+    kod: 'N.S.',
+    deskripsi: 'Sempadan Pentadbiran Negeri Sembilan'
+  },
+  coordinates: [
+    [2.400, 101.700],
+    [2.550, 101.750],
+    [2.700, 101.850],
+    [2.900, 101.900],
+    [3.200, 102.000],
+    [3.250, 102.200],
+    [3.150, 102.400],
+    [3.100, 102.600],
+    [2.800, 102.750],
+    [2.650, 102.700],
+    [2.450, 102.500],
+    [2.400, 102.350],
+    [2.350, 102.000],
+    [2.350, 101.800],
+    [2.400, 101.700]
   ]
 };
 

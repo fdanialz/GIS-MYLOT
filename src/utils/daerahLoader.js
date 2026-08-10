@@ -11,8 +11,8 @@ export const SEREMBAN_LAYERS_CONFIG = [
     name: 'Sempadan Daerah Seremban',
     file: 'T_DAERAH_region.json',
     category: 'Sempadan & Pentadbiran',
-    color: '#3b82f6',
-    fillColor: '#1d4ed8',
+    color: '#0284c7',
+    fillColor: '#0ea5e9',
     type: 'polygon',
     defaultEnabled: true,
     description: 'Sempadan rasmi pentadbiran Daerah Seremban (JUPEM)'
@@ -20,14 +20,28 @@ export const SEREMBAN_LAYERS_CONFIG = [
   {
     id: 'malayRes',
     daerah: 'seremban',
-    name: 'Warta Rizab Melayu (Seremban)',
+    name: 'Tanah Rizab Melayu (Seremban)',
     file: 'V_MALAY_RES_region.json',
     category: 'Rizab Tanah',
-    color: '#ef4444',
-    fillColor: '#b91c1c',
+    reserveType: 'rizab_melayu',
+    color: '#ca8a04',
+    fillColor: '#facc15',
     type: 'polygon',
     defaultEnabled: true,
-    description: 'Kawasan Warta Tanah Rizab Melayu Seremban'
+    description: 'Kawasan Warta Tanah Rizab Melayu Seremban (Warna Kuning)'
+  },
+  {
+    id: 'pembatalanLama',
+    daerah: 'seremban',
+    name: 'Tanah Rizab Melayu Pembatalan (Seremban)',
+    file: 'PEMBATALAN_LAMA_region.json',
+    category: 'Rizab Tanah',
+    reserveType: 'pembatalan',
+    color: '#dc2626',
+    fillColor: '#ef4444',
+    type: 'polygon',
+    defaultEnabled: true,
+    description: 'Rekod Pembatalan Warta Rizab Melayu Seremban (Warna Merah)'
   },
   {
     id: 'forestRes',
@@ -35,11 +49,12 @@ export const SEREMBAN_LAYERS_CONFIG = [
     name: 'Hutan Simpan Kekal (Seremban)',
     file: 'V_FOREST_RES_region.json',
     category: 'Rizab Tanah',
-    color: '#10b981',
-    fillColor: '#15803d',
+    reserveType: 'hutan',
+    color: '#059669',
+    fillColor: '#4ade80',
     type: 'polygon',
     defaultEnabled: true,
-    description: 'Kawasan Hutan Simpan Kekal Daerah Seremban'
+    description: 'Kawasan Hutan Simpan Kekal Daerah Seremban (Warna Hijau Terang/Gelap)'
   },
   {
     id: 'aborigineRes',
@@ -47,11 +62,12 @@ export const SEREMBAN_LAYERS_CONFIG = [
     name: 'Rizab Orang Asli (Seremban)',
     file: 'V_ABORIGINE_RES_region.json',
     category: 'Rizab Tanah',
-    color: '#a855f7',
-    fillColor: '#7e22ce',
+    reserveType: 'orang_asli',
+    color: '#7e22ce',
+    fillColor: '#a855f7',
     type: 'polygon',
     defaultEnabled: true,
-    description: 'Kawasan Rizab Orang Asli Seremban'
+    description: 'Kawasan Rizab Orang Asli Seremban (Warna Purple)'
   },
   {
     id: 'wartaLot',
@@ -59,8 +75,8 @@ export const SEREMBAN_LAYERS_CONFIG = [
     name: 'Warta Lot Seremban (1,772 Lot)',
     file: 'WARTA_LOT_region.json',
     category: 'Kadaster & Lot',
-    color: '#eab308',
-    fillColor: '#ca8a04',
+    color: '#f59e0b',
+    fillColor: '#fbbf24',
     type: 'polygon',
     defaultEnabled: true,
     description: 'Lot-lot warta di Daerah Seremban'
@@ -68,72 +84,15 @@ export const SEREMBAN_LAYERS_CONFIG = [
   {
     id: 'rizabMelayuLama',
     daerah: 'seremban',
-    name: 'Rizab Melayu Lama (Seremban)',
+    name: 'Rizab Melayu Terdahulu (Seremban)',
     file: 'RIZAB MELAYU_LAMA_region.json',
     category: 'Rizab Tanah',
-    color: '#f97316',
-    fillColor: '#c2410c',
+    reserveType: 'rizab_melayu',
+    color: '#ca8a04',
+    fillColor: '#fde047',
     type: 'polygon',
     defaultEnabled: false,
     description: 'Kawasan Rizab Melayu rekod terdahulu Seremban'
-  },
-  {
-    id: 'pembatalanLama',
-    daerah: 'seremban',
-    name: 'Warta Pembatalan Rizab (Seremban)',
-    file: 'PEMBATALAN_LAMA_region.json',
-    category: 'Rizab Tanah',
-    color: '#64748b',
-    fillColor: '#334155',
-    type: 'polygon',
-    defaultEnabled: false,
-    description: 'Rekod pembatalan warta terdahulu Seremban'
-  },
-  {
-    id: 'transitionLot',
-    daerah: 'seremban',
-    name: 'Transition Lot Region (Seremban)',
-    file: 'V_TRANSITTION_LOT_region.json',
-    category: 'Kadaster & Lot',
-    color: '#06b6d4',
-    fillColor: '#0e7490',
-    type: 'polygon',
-    defaultEnabled: false,
-    description: 'Lot pemetaan transition JUPEM Seremban'
-  },
-  {
-    id: 'transitionBdyPolyline',
-    daerah: 'seremban',
-    name: 'Sempadan Transition Polyline',
-    file: 'V_TRANSITTION_BDY_polyline.json',
-    category: 'Sempadan & Pentadbiran',
-    color: '#ec4899',
-    type: 'polyline',
-    defaultEnabled: false,
-    description: 'Garisan garisan sempadan transition Seremban'
-  },
-  {
-    id: 'ndcdbLotRegion',
-    daerah: 'seremban',
-    name: 'Lot Kadaster NDCDB Seremban',
-    file: 'V_NDCDBLOT_region.json',
-    category: 'Kadaster & Lot',
-    color: '#0284c7',
-    fillColor: '#0369a1',
-    type: 'polygon',
-    defaultEnabled: false,
-    description: 'Keseluruhan lot NDCDB Daerah Seremban'
-  },
-  {
-    id: 'ndcdbBdyPolyline',
-    daerah: 'seremban',
-    name: 'Garisan Sempadan NDCDB Polyline',
-    file: 'NDCDBBDY_polyline.json',
-    category: 'Kadaster & Lot',
-    color: '#6366f1',
-    type: 'polyline',
-    defaultEnabled: false,
-    description: 'Garisan polilain NDCDB Seremban'
   }
 ];
 
@@ -144,8 +103,8 @@ export const JEMPOL_LAYERS_CONFIG = [
     name: 'Sempadan Daerah Jempol',
     file: 'JEMPOL_region.json',
     category: 'Sempadan & Pentadbiran',
-    color: '#3b82f6',
-    fillColor: '#1d4ed8',
+    color: '#0284c7',
+    fillColor: '#0ea5e9',
     type: 'polygon',
     defaultEnabled: true,
     description: 'Sempadan rasmi pentadbiran Daerah Jempol (JUPEM)'
@@ -153,26 +112,54 @@ export const JEMPOL_LAYERS_CONFIG = [
   {
     id: 'malayResJempol',
     daerah: 'jempol',
-    name: 'Warta Rizab Melayu Jempol (Blok A)',
+    name: 'Tanah Rizab Melayu Jempol (Blok A)',
     file: 'JEMPOL TRM BARU A_region.json',
     category: 'Rizab Tanah',
-    color: '#ef4444',
-    fillColor: '#b91c1c',
+    reserveType: 'rizab_melayu',
+    color: '#ca8a04',
+    fillColor: '#facc15',
     type: 'polygon',
     defaultEnabled: true,
-    description: 'Kawasan Warta Tanah Rizab Melayu Jempol (Blok A)'
+    description: 'Kawasan Tanah Rizab Melayu Jempol Blok A (Warna Kuning)'
   },
   {
     id: 'malayResB',
     daerah: 'jempol',
-    name: 'Warta Rizab Melayu Jempol (Blok B)',
+    name: 'Tanah Rizab Melayu Jempol (Blok B)',
     file: 'JEMPOL TRM BARU B_region.json',
     category: 'Rizab Tanah',
-    color: '#f87171',
-    fillColor: '#dc2626',
+    reserveType: 'rizab_melayu',
+    color: '#ca8a04',
+    fillColor: '#fde047',
     type: 'polygon',
     defaultEnabled: true,
-    description: 'Kawasan Warta Tanah Rizab Melayu Jempol (Blok B)'
+    description: 'Kawasan Tanah Rizab Melayu Jempol Blok B (Warna Kuning)'
+  },
+  {
+    id: 'pembatalanTrmJempol',
+    daerah: 'jempol',
+    name: 'Tanah Rizab Melayu Pembatalan Jempol',
+    file: 'JEMPOL PEMBATALAN TRM BARU_region.json',
+    category: 'Rizab Tanah',
+    reserveType: 'pembatalan',
+    color: '#dc2626',
+    fillColor: '#ef4444',
+    type: 'polygon',
+    defaultEnabled: true,
+    description: 'Rekod Pembatalan Rizab Melayu Jempol (Warna Merah)'
+  },
+  {
+    id: 'trmGantianLama',
+    daerah: 'jempol',
+    name: 'Tanah Rizab Melayu Penggantian Jempol',
+    file: 'JEMPOL TRM GANTIAN LAMA_region.json',
+    category: 'Rizab Tanah',
+    reserveType: 'penggantian',
+    color: '#2563eb',
+    fillColor: '#3b82f6',
+    type: 'polygon',
+    defaultEnabled: true,
+    description: 'Kawasan Tanah Rizab Melayu Penggantian Jempol (Warna Biru)'
   },
   {
     id: 'forestResJempol',
@@ -180,11 +167,12 @@ export const JEMPOL_LAYERS_CONFIG = [
     name: 'Hutan Simpan Kekal Jempol',
     file: 'JEMPOL RIZAB HUTAN_region.json',
     category: 'Rizab Tanah',
-    color: '#10b981',
+    reserveType: 'hutan',
+    color: '#059669',
     fillColor: '#15803d',
     type: 'polygon',
     defaultEnabled: true,
-    description: 'Kawasan Hutan Simpan Kekal Daerah Jempol'
+    description: 'Kawasan Hutan Simpan Kekal Daerah Jempol (Warna Hijau Gelap)'
   },
   {
     id: 'aborigineResJempol',
@@ -192,11 +180,12 @@ export const JEMPOL_LAYERS_CONFIG = [
     name: 'Rizab Orang Asli Jempol',
     file: 'JEMPOL RIZAB ORANG ASLI_region.json',
     category: 'Rizab Tanah',
-    color: '#a855f7',
-    fillColor: '#7e22ce',
+    reserveType: 'orang_asli',
+    color: '#7e22ce',
+    fillColor: '#a855f7',
     type: 'polygon',
     defaultEnabled: true,
-    description: 'Kawasan Rizab Orang Asli Daerah Jempol'
+    description: 'Kawasan Rizab Orang Asli Daerah Jempol (Warna Purple)'
   },
   {
     id: 'wartaLotJempol',
@@ -204,59 +193,11 @@ export const JEMPOL_LAYERS_CONFIG = [
     name: 'Warta Lot Jempol (955 Lot)',
     file: 'JEMPOL WARTA_region.json',
     category: 'Kadaster & Lot',
-    color: '#eab308',
-    fillColor: '#ca8a04',
+    color: '#f59e0b',
+    fillColor: '#fbbf24',
     type: 'polygon',
     defaultEnabled: true,
     description: 'Lot-lot warta di Daerah Jempol'
-  },
-  {
-    id: 'ndcdbLotJempol',
-    daerah: 'jempol',
-    name: 'Lot Kadaster NDCDB Jempol (62,516 Lot)',
-    file: 'JEMPOL NDCDB BARU_region.json',
-    category: 'Kadaster & Lot',
-    color: '#0284c7',
-    fillColor: '#0369a1',
-    type: 'polygon',
-    defaultEnabled: false,
-    description: 'Keseluruhan lot NDCDB Daerah Jempol'
-  },
-  {
-    id: 'pembatalanTrmJempol',
-    daerah: 'jempol',
-    name: 'Warta Pembatalan TRM Jempol',
-    file: 'JEMPOL PEMBATALAN TRM BARU_region.json',
-    category: 'Rizab Tanah',
-    color: '#64748b',
-    fillColor: '#334155',
-    type: 'polygon',
-    defaultEnabled: false,
-    description: 'Rekod pembatalan Warta Rizab Melayu Jempol'
-  },
-  {
-    id: 'trmGantianLama',
-    daerah: 'jempol',
-    name: 'Rizab Melayu Gantian Lama Jempol',
-    file: 'JEMPOL TRM GANTIAN LAMA_region.json',
-    category: 'Rizab Tanah',
-    color: '#f97316',
-    fillColor: '#c2410c',
-    type: 'polygon',
-    defaultEnabled: false,
-    description: 'Kawasan Rizab Melayu Gantian Jempol'
-  },
-  {
-    id: 'trmLamaJempol',
-    daerah: 'jempol',
-    name: 'Rizab Melayu Rekod Terdahulu Jempol',
-    file: 'JEMPOL TRM LAMA_region.json',
-    category: 'Rizab Tanah',
-    color: '#fb923c',
-    fillColor: '#ea580c',
-    type: 'polygon',
-    defaultEnabled: false,
-    description: 'Rekod terdahulu Rizab Melayu Jempol'
   }
 ];
 
@@ -267,8 +208,8 @@ export const PD_LAYERS_CONFIG = [
     name: 'Sempadan Daerah Port Dickson',
     file: 'T_DAERAH_region.json',
     category: 'Sempadan & Pentadbiran',
-    color: '#3b82f6',
-    fillColor: '#1d4ed8',
+    color: '#0284c7',
+    fillColor: '#0ea5e9',
     type: 'polygon',
     defaultEnabled: true,
     description: 'Sempadan rasmi pentadbiran Daerah Port Dickson (JUPEM)'
@@ -276,14 +217,28 @@ export const PD_LAYERS_CONFIG = [
   {
     id: 'malayResPd',
     daerah: 'pd',
-    name: 'Warta Rizab Melayu Port Dickson',
+    name: 'Tanah Rizab Melayu Port Dickson',
     file: 'V_MALAY_RES_region.json',
     category: 'Rizab Tanah',
-    color: '#ef4444',
-    fillColor: '#b91c1c',
+    reserveType: 'rizab_melayu',
+    color: '#ca8a04',
+    fillColor: '#facc15',
     type: 'polygon',
     defaultEnabled: true,
-    description: 'Kawasan Warta Tanah Rizab Melayu Port Dickson'
+    description: 'Kawasan Warta Tanah Rizab Melayu Port Dickson (Warna Kuning)'
+  },
+  {
+    id: 'pembatalanPd',
+    daerah: 'pd',
+    name: 'Tanah Rizab Melayu Pembatalan Port Dickson',
+    file: 'PEMBATALAN_LAMA_region.json',
+    category: 'Rizab Tanah',
+    reserveType: 'pembatalan',
+    color: '#dc2626',
+    fillColor: '#ef4444',
+    type: 'polygon',
+    defaultEnabled: true,
+    description: 'Rekod Pembatalan Rizab Melayu Port Dickson (Warna Merah)'
   },
   {
     id: 'forestResPd',
@@ -291,11 +246,12 @@ export const PD_LAYERS_CONFIG = [
     name: 'Hutan Simpan Kekal Port Dickson',
     file: 'V_FOREST_RES_region.json',
     category: 'Rizab Tanah',
-    color: '#10b981',
-    fillColor: '#15803d',
+    reserveType: 'hutan',
+    color: '#059669',
+    fillColor: '#4ade80',
     type: 'polygon',
     defaultEnabled: true,
-    description: 'Kawasan Hutan Simpan Kekal Port Dickson'
+    description: 'Kawasan Hutan Simpan Kekal Port Dickson (Warna Hijau Terang)'
   },
   {
     id: 'aborigineResPd',
@@ -303,11 +259,12 @@ export const PD_LAYERS_CONFIG = [
     name: 'Rizab Orang Asli Port Dickson',
     file: 'V_ABORIGINE_RES_region.json',
     category: 'Rizab Tanah',
-    color: '#a855f7',
-    fillColor: '#7e22ce',
+    reserveType: 'orang_asli',
+    color: '#7e22ce',
+    fillColor: '#a855f7',
     type: 'polygon',
     defaultEnabled: true,
-    description: 'Kawasan Rizab Orang Asli Port Dickson'
+    description: 'Kawasan Rizab Orang Asli Port Dickson (Warna Purple)'
   },
   {
     id: 'wartaLotPd',
@@ -315,55 +272,21 @@ export const PD_LAYERS_CONFIG = [
     name: 'Warta Lot Port Dickson (569 Lot)',
     file: 'WARTA_LOT_region.json',
     category: 'Kadaster & Lot',
-    color: '#eab308',
-    fillColor: '#ca8a04',
+    color: '#f59e0b',
+    fillColor: '#fbbf24',
     type: 'polygon',
     defaultEnabled: true,
     description: 'Lot-lot warta di Daerah Port Dickson'
   },
   {
-    id: 'ndcdbLotPd',
-    daerah: 'pd',
-    name: 'Lot Kadaster NDCDB Port Dickson (64,565 Lot)',
-    file: 'V_NDCDBLOT_region.json',
-    category: 'Kadaster & Lot',
-    color: '#0284c7',
-    fillColor: '#0369a1',
-    type: 'polygon',
-    defaultEnabled: false,
-    description: 'Keseluruhan lot NDCDB Daerah Port Dickson'
-  },
-  {
-    id: 'ndcdbBdyPd',
-    daerah: 'pd',
-    name: 'Garisan Sempadan NDCDB Polyline Port Dickson',
-    file: 'NDCDBBDY_polyline.json',
-    category: 'Kadaster & Lot',
-    color: '#6366f1',
-    type: 'polyline',
-    defaultEnabled: false,
-    description: 'Garisan polilain NDCDB Port Dickson'
-  },
-  {
-    id: 'pembatalanPd',
-    daerah: 'pd',
-    name: 'Warta Pembatalan Rizab Port Dickson',
-    file: 'PEMBATALAN_LAMA_region.json',
-    category: 'Rizab Tanah',
-    color: '#64748b',
-    fillColor: '#334155',
-    type: 'polygon',
-    defaultEnabled: false,
-    description: 'Rekod pembatalan warta Port Dickson'
-  },
-  {
     id: 'rizabMelayuLamaPd',
     daerah: 'pd',
-    name: 'Rizab Melayu Rekod Terdahulu Port Dickson',
+    name: 'Rizab Melayu Terdahulu Port Dickson',
     file: 'RIZAB MELAYU_LAMA_region.json',
     category: 'Rizab Tanah',
-    color: '#f97316',
-    fillColor: '#c2410c',
+    reserveType: 'rizab_melayu',
+    color: '#ca8a04',
+    fillColor: '#fde047',
     type: 'polygon',
     defaultEnabled: false,
     description: 'Rekod terdahulu Rizab Melayu Port Dickson'
@@ -377,8 +300,8 @@ export const REMBAU_LAYERS_CONFIG = [
     name: 'Sempadan Daerah Rembau',
     file: 'REMBAU_region.json',
     category: 'Sempadan & Pentadbiran',
-    color: '#3b82f6',
-    fillColor: '#1d4ed8',
+    color: '#0284c7',
+    fillColor: '#0ea5e9',
     type: 'polygon',
     defaultEnabled: true,
     description: 'Sempadan rasmi pentadbiran Daerah Rembau (JUPEM)'
@@ -386,14 +309,28 @@ export const REMBAU_LAYERS_CONFIG = [
   {
     id: 'malayResRembau',
     daerah: 'rembau',
-    name: 'Warta Rizab Melayu Rembau',
+    name: 'Tanah Rizab Melayu Rembau',
     file: 'MALAY REMBAU_region.json',
     category: 'Rizab Tanah',
-    color: '#ef4444',
-    fillColor: '#b91c1c',
+    reserveType: 'rizab_melayu',
+    color: '#ca8a04',
+    fillColor: '#facc15',
     type: 'polygon',
     defaultEnabled: true,
-    description: 'Kawasan Warta Tanah Rizab Melayu Rembau'
+    description: 'Kawasan Warta Tanah Rizab Melayu Rembau (Warna Kuning)'
+  },
+  {
+    id: 'pembatalanRembau',
+    daerah: 'rembau',
+    name: 'Tanah Rizab Melayu Pembatalan Rembau',
+    file: 'PEMBATALAN TRM REMBAU_region.json',
+    category: 'Rizab Tanah',
+    reserveType: 'pembatalan',
+    color: '#dc2626',
+    fillColor: '#ef4444',
+    type: 'polygon',
+    defaultEnabled: true,
+    description: 'Rekod Pembatalan TRM Rembau (Warna Merah)'
   },
   {
     id: 'forestResRembau',
@@ -401,11 +338,12 @@ export const REMBAU_LAYERS_CONFIG = [
     name: 'Hutan Simpan Kekal Rembau',
     file: 'FOREST REMBAU_region.json',
     category: 'Rizab Tanah',
-    color: '#10b981',
+    reserveType: 'hutan',
+    color: '#059669',
     fillColor: '#15803d',
     type: 'polygon',
     defaultEnabled: true,
-    description: 'Kawasan Hutan Simpan Kekal Daerah Rembau'
+    description: 'Kawasan Hutan Simpan Kekal Daerah Rembau (Warna Hijau Gelap)'
   },
   {
     id: 'aborigineResRembau',
@@ -413,11 +351,12 @@ export const REMBAU_LAYERS_CONFIG = [
     name: 'Rizab Orang Asli Rembau',
     file: 'ABORIGINE REMBAU_region.json',
     category: 'Rizab Tanah',
-    color: '#a855f7',
-    fillColor: '#7e22ce',
+    reserveType: 'orang_asli',
+    color: '#7e22ce',
+    fillColor: '#a855f7',
     type: 'polygon',
     defaultEnabled: true,
-    description: 'Kawasan Rizab Orang Asli Daerah Rembau'
+    description: 'Kawasan Rizab Orang Asli Daerah Rembau (Warna Purple)'
   },
   {
     id: 'wartaLotRembau',
@@ -425,47 +364,11 @@ export const REMBAU_LAYERS_CONFIG = [
     name: 'Warta Lot Rembau (343 Lot)',
     file: 'WARTA LOT REMBAU_region.json',
     category: 'Kadaster & Lot',
-    color: '#eab308',
-    fillColor: '#ca8a04',
+    color: '#f59e0b',
+    fillColor: '#fbbf24',
     type: 'polygon',
     defaultEnabled: true,
     description: 'Lot-lot warta di Daerah Rembau'
-  },
-  {
-    id: 'ndcdbLotRembau',
-    daerah: 'rembau',
-    name: 'Lot Kadaster NDCDB Rembau (39,502 Lot)',
-    file: 'NDCDB LOT REMBAU_region.json',
-    category: 'Kadaster & Lot',
-    color: '#0284c7',
-    fillColor: '#0369a1',
-    type: 'polygon',
-    defaultEnabled: false,
-    description: 'Keseluruhan lot NDCDB Daerah Rembau'
-  },
-  {
-    id: 'pembatalanRembau',
-    daerah: 'rembau',
-    name: 'Warta Pembatalan TRM Rembau',
-    file: 'PEMBATALAN TRM REMBAU_region.json',
-    category: 'Rizab Tanah',
-    color: '#64748b',
-    fillColor: '#334155',
-    type: 'polygon',
-    defaultEnabled: false,
-    description: 'Rekod pembatalan TRM Rembau'
-  },
-  {
-    id: 'seksyenRembau',
-    daerah: 'rembau',
-    name: 'Seksyen Ukur Rembau',
-    file: 'SEKSYEN REMBAU_region.json',
-    category: 'Sempadan & Pentadbiran',
-    color: '#06b6d4',
-    fillColor: '#0e7490',
-    type: 'polygon',
-    defaultEnabled: false,
-    description: 'Sempadan seksyen pemetaan Rembau'
   }
 ];
 
@@ -476,8 +379,8 @@ export const TAMPIN_LAYERS_CONFIG = [
     name: 'Sempadan Daerah Tampin',
     file: 'TAMPIN_region.json',
     category: 'Sempadan & Pentadbiran',
-    color: '#3b82f6',
-    fillColor: '#1d4ed8',
+    color: '#0284c7',
+    fillColor: '#0ea5e9',
     type: 'polygon',
     defaultEnabled: true,
     description: 'Sempadan rasmi pentadbiran Daerah Tampin (JUPEM)'
@@ -485,14 +388,41 @@ export const TAMPIN_LAYERS_CONFIG = [
   {
     id: 'malayResTampin',
     daerah: 'tampin',
-    name: 'Warta Rizab Melayu Tampin',
+    name: 'Tanah Rizab Melayu Tampin',
     file: 'MALAY TAMPIN_region.json',
     category: 'Rizab Tanah',
-    color: '#ef4444',
-    fillColor: '#b91c1c',
+    reserveType: 'rizab_melayu',
+    color: '#ca8a04',
+    fillColor: '#facc15',
     type: 'polygon',
     defaultEnabled: true,
-    description: 'Kawasan Warta Tanah Rizab Melayu Tampin'
+    description: 'Kawasan Warta Tanah Rizab Melayu Tampin (Warna Kuning)'
+  },
+  {
+    id: 'pembatalanTampin',
+    daerah: 'tampin',
+    name: 'Tanah Rizab Melayu Pembatalan Tampin',
+    file: 'PEMBATALAN TRM TAMPIN_region.json',
+    category: 'Rizab Tanah',
+    reserveType: 'pembatalan',
+    color: '#dc2626',
+    fillColor: '#ef4444',
+    type: 'polygon',
+    defaultEnabled: true,
+    description: 'Rekod Pembatalan TRM Tampin (Warna Merah)'
+  },
+  {
+    id: 'penggantianTampin',
+    daerah: 'tampin',
+    name: 'Tanah Rizab Melayu Penggantian Tampin',
+    file: 'PENGGANTIAN TRM TAMPIN_region.json',
+    category: 'Rizab Tanah',
+    reserveType: 'penggantian',
+    color: '#2563eb',
+    fillColor: '#3b82f6',
+    type: 'polygon',
+    defaultEnabled: true,
+    description: 'Kawasan Penggantian Rizab Melayu Tampin (Warna Biru)'
   },
   {
     id: 'forestResTampin',
@@ -500,11 +430,12 @@ export const TAMPIN_LAYERS_CONFIG = [
     name: 'Hutan Simpan Kekal Tampin',
     file: 'FOREST TAMPIN_region.json',
     category: 'Rizab Tanah',
-    color: '#10b981',
-    fillColor: '#15803d',
+    reserveType: 'hutan',
+    color: '#059669',
+    fillColor: '#4ade80',
     type: 'polygon',
     defaultEnabled: true,
-    description: 'Kawasan Hutan Simpan Kekal Daerah Tampin'
+    description: 'Kawasan Hutan Simpan Kekal Daerah Tampin (Warna Hijau Terang)'
   },
   {
     id: 'aborigineResTampin',
@@ -512,11 +443,12 @@ export const TAMPIN_LAYERS_CONFIG = [
     name: 'Rizab Orang Asli Tampin',
     file: 'ABORIGINE TAMPIN_region.json',
     category: 'Rizab Tanah',
-    color: '#a855f7',
-    fillColor: '#7e22ce',
+    reserveType: 'orang_asli',
+    color: '#7e22ce',
+    fillColor: '#a855f7',
     type: 'polygon',
     defaultEnabled: true,
-    description: 'Kawasan Rizab Orang Asli Daerah Tampin'
+    description: 'Kawasan Rizab Orang Asli Daerah Tampin (Warna Purple)'
   },
   {
     id: 'wartaLotTampin',
@@ -524,59 +456,11 @@ export const TAMPIN_LAYERS_CONFIG = [
     name: 'Warta Lot Tampin (634 Lot)',
     file: 'WARTA LOT TAMPIN_region.json',
     category: 'Kadaster & Lot',
-    color: '#eab308',
-    fillColor: '#ca8a04',
+    color: '#f59e0b',
+    fillColor: '#fbbf24',
     type: 'polygon',
     defaultEnabled: true,
     description: 'Lot-lot warta di Daerah Tampin'
-  },
-  {
-    id: 'ndcdbLotTampin',
-    daerah: 'tampin',
-    name: 'Lot Kadaster NDCDB Tampin (49,425 Lot)',
-    file: 'NDCDB LOT TAMPIN_region.json',
-    category: 'Kadaster & Lot',
-    color: '#0284c7',
-    fillColor: '#0369a1',
-    type: 'polygon',
-    defaultEnabled: false,
-    description: 'Keseluruhan lot NDCDB Daerah Tampin'
-  },
-  {
-    id: 'pembatalanTampin',
-    daerah: 'tampin',
-    name: 'Warta Pembatalan TRM Tampin',
-    file: 'PEMBATALAN TRM TAMPIN_region.json',
-    category: 'Rizab Tanah',
-    color: '#64748b',
-    fillColor: '#334155',
-    type: 'polygon',
-    defaultEnabled: false,
-    description: 'Rekod pembatalan TRM Tampin'
-  },
-  {
-    id: 'penggantianTampin',
-    daerah: 'tampin',
-    name: 'Penggantian TRM Tampin',
-    file: 'PENGGANTIAN TRM TAMPIN_region.json',
-    category: 'Rizab Tanah',
-    color: '#f97316',
-    fillColor: '#c2410c',
-    type: 'polygon',
-    defaultEnabled: false,
-    description: 'Kawasan Penggantian Rizab Melayu Tampin'
-  },
-  {
-    id: 'seksyenTampin',
-    daerah: 'tampin',
-    name: 'Seksyen Ukur Tampin',
-    file: 'SEKSYEN TAMPIN_region.json',
-    category: 'Sempadan & Pentadbiran',
-    color: '#06b6d4',
-    fillColor: '#0e7490',
-    type: 'polygon',
-    defaultEnabled: false,
-    description: 'Sempadan seksyen pemetaan Tampin'
   }
 ];
 

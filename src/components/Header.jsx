@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Download, FileText, PanelLeftClose, PanelLeftOpen, Map, Building2, Trees, Waves, Sprout, Mountain, Sun, Moon, SlidersHorizontal, X } from 'lucide-react';
 
 export default function Header({ 
-  onOpenQgisModal, 
   onOpenReportModal, 
   isSidebarOpen, 
   setIsSidebarOpen,
@@ -44,8 +43,8 @@ export default function Header({
         </div>
 
         <div className="brand-copy">
-          <div className="brand-title">MyRizab</div>
-          <div className="brand-subtitle">Portal Spasial Tanah Rizab Negeri Sembilan</div>
+          <div className="brand-title">MRIS</div>
+          <div className="brand-subtitle">MyReserveInformationSolution • N.S.</div>
         </div>
       </div>
 
@@ -93,13 +92,6 @@ export default function Header({
         </button>
 
         <button 
-          onClick={onOpenQgisModal}
-          className="btn-header-action btn-secondary"
-        >
-          <Download size={14} /> <span>QGIS Export</span>
-        </button>
-
-        <button 
           onClick={onOpenReportModal}
           className="btn-header-action btn-primary"
         >
@@ -125,13 +117,6 @@ export default function Header({
             >
               {theme === 'light' ? <Moon size={15} /> : <Sun size={15} />}
               <span>{theme === 'light' ? "Mod Gelap (Dark Mode)" : "Mod Terang (Light Mode)"}</span>
-            </button>
-            <button 
-              onClick={() => { onOpenQgisModal(); setShowMobileMenu(false); }}
-              className="mobile-popover-item"
-            >
-              <Download size={15} />
-              <span>Integrasi QGIS Export</span>
             </button>
             <button 
               onClick={() => { onOpenReportModal(); setShowMobileMenu(false); }}
