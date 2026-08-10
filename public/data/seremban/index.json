@@ -3,70 +3,70 @@
     "key": "T_DAERAH_region",
     "file": "T_DAERAH_region.json",
     "featureCount": 1,
-    "sizeMb": 0.05,
+    "sizeMb": 0.03,
     "geomType": "Polygon"
   },
   {
     "key": "V_MALAY_RES_region",
     "file": "V_MALAY_RES_region.json",
     "featureCount": 40,
-    "sizeMb": 0.07,
+    "sizeMb": 0.03,
     "geomType": "Polygon"
   },
   {
     "key": "V_FOREST_RES_region",
     "file": "V_FOREST_RES_region.json",
     "featureCount": 53,
-    "sizeMb": 0.14,
+    "sizeMb": 0.07,
     "geomType": "Polygon"
   },
   {
     "key": "V_ABORIGINE_RES_region",
     "file": "V_ABORIGINE_RES_region.json",
     "featureCount": 3,
-    "sizeMb": 0.01,
+    "sizeMb": 0,
     "geomType": "Polygon"
   },
   {
     "key": "RIZAB MELAYU_LAMA_region",
     "file": "RIZAB MELAYU_LAMA_region.json",
     "featureCount": 25,
-    "sizeMb": 0.18,
+    "sizeMb": 0.1,
     "geomType": "Polygon"
   },
   {
     "key": "PEMBATALAN_LAMA_region",
     "file": "PEMBATALAN_LAMA_region.json",
     "featureCount": 16,
-    "sizeMb": 0.03,
+    "sizeMb": 0.01,
     "geomType": "Polygon"
   },
   {
     "key": "WARTA_LOT_region",
     "file": "WARTA_LOT_region.json",
     "featureCount": 1772,
-    "sizeMb": 2.68,
+    "sizeMb": 1.59,
     "geomType": "Polygon"
   },
   {
     "key": "V_TRANSITTION_LOT_region",
     "file": "V_TRANSITTION_LOT_region.json",
     "featureCount": 7,
-    "sizeMb": 0.29,
+    "sizeMb": 0.16,
     "geomType": "Polygon"
   },
   {
     "key": "V_TRANSITTION_BDY_polyline",
     "file": "V_TRANSITTION_BDY_polyline.json",
     "featureCount": 16921,
-    "sizeMb": 7.95,
+    "sizeMb": 4.73,
     "geomType": "LineString"
   },
   {
     "key": "V_TRANSITTION_STN_point",
     "file": "V_TRANSITTION_STN_point.json",
     "featureCount": 253092,
-    "sizeMb": 99.35,
+    "sizeMb": 31.06,
     "geomType": "Point"
   },
   {
@@ -79,15 +79,15 @@
   {
     "key": "V_NDCDBLOT_region",
     "file": "V_NDCDBLOT_region.json",
-    "featureCount": 1772,
-    "sizeMb": 2.88,
+    "featureCount": 279467,
+    "sizeMb": 99.73,
     "geomType": "Polygon"
   },
   {
     "key": "NDCDBBDY_polyline",
     "file": "NDCDBBDY_polyline.json",
-    "featureCount": 16921,
-    "sizeMb": 7.37,
+    "featureCount": 960899,
+    "sizeMb": 193.98,
     "geomType": "LineString"
   }
 ]

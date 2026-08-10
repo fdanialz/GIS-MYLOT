@@ -603,6 +603,27 @@ export async function fetchDaerahLayerData(daerah, fileName) {
     return cache[cacheKey];
   }
 
+  // Handle split chunk loading for oversized files (e.g. Seremban polyline >100MB split for GitHub compliance)
+  if (daerah === 'seremban' && fileName === 'NDCDBBDY_polyline.json') {
+    try {
+      const p1 = fetchDaerahLayerData(daerah, 'NDCDBBDY_polyline_part1.json');
+      const p2 = fetchDaerahLayerData(daerah, 'NDCDBBDY_polyline_part2.json');
+      const [d1, d2] = await Promise.all([p1, p2]);
+      if (d1 && d2 && d1.features && d2.features) {
+        const merged = {
+          type: 'FeatureCollection',
+          name: 'NDCDBBDY_polyline',
+          features: [...d1.features, ...d2.features]
+        };
+        cache[cacheKey] = merged;
+        return merged;
+      }
+      if (d1 && d1.features) return d1;
+    } catch (e) {
+      console.warn('Fallback single file fetch for Seremban NDCDBBDY_polyline');
+    }
+  }
+
   const encodedFileName = encodeURIComponent(fileName);
   const rawBase = import.meta.env.BASE_URL || './';
   const cleanBase = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;

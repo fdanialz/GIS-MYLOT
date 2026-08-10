@@ -56,6 +56,43 @@ for (const name of fileBases) {
     const parsedDbf = shpModule.parseDbf(dbfBuffer);
     const geojson = shpModule.combine([parsedShp, parsedDbf]);
 
+    // Coordinate rounding to 6 decimal places (~10cm accuracy)
+    const roundCoords = (coords) => {
+      if (typeof coords === 'number') return Math.round(coords * 1000000) / 1000000;
+      if (Array.isArray(coords)) return coords.map(roundCoords);
+      return coords;
+    };
+
+    const POLYLINE_KEYS = new Set(['UPI', 'ADJPARCEL', 'BEARING', 'JARAK', 'BLOCK']);
+    const POLYGON_KEYS = new Set([
+      'id', 'ID', 'nama', 'NAMA', 'noLot', 'LOT', 'NO_LOT', 'LOT_NAMA',
+      'mukim', 'MUKIM', 'NM_MUKIM', 'daerah', 'DAERAH', 'noWarta', 'WARTA',
+      'NO_WARTA', 'NOWARTA', 'TUJUAN_WAR', 'NOPW', 'noPW', 'PA', 'noPA',
+      'UPI', 'NOFAILUKUR', 'KELUASAN', 'TARIKH_UKUR', 'STATUS', 'KEGUNAAN',
+      'MI_PRINX', 'OBJECTID'
+    ]);
+
+    if (geojson && geojson.features) {
+      const isPolyline = name.includes('polyline') || name.includes('BDY');
+      const allowedKeys = isPolyline ? POLYLINE_KEYS : POLYGON_KEYS;
+
+      geojson.features.forEach(f => {
+        if (f.geometry && f.geometry.coordinates) {
+          f.geometry.coordinates = roundCoords(f.geometry.coordinates);
+        }
+        if (f.properties) {
+          const clean = {};
+          for (const k of Object.keys(f.properties)) {
+            const val = f.properties[k];
+            if (val !== null && val !== '' && val !== undefined && allowedKeys.has(k)) {
+              clean[k] = val;
+            }
+          }
+          f.properties = clean;
+        }
+      });
+    }
+
     const count = geojson.features ? geojson.features.length : 0;
     const jsonFileName = `${name}.json`;
     const outputPath = path.join(outputDir, jsonFileName);

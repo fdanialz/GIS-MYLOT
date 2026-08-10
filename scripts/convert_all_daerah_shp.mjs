@@ -94,6 +94,28 @@ for (const source of DAERAH_SOURCES) {
       const parsedDbf = dbfBuffer ? shpModule.parseDbf(dbfBuffer) : [];
       const geojson = shpModule.combine([parsedShp, parsedDbf]);
 
+      // Function to round coordinates to 6 decimal places (~10cm accuracy)
+      const roundCoords = (coords) => {
+        if (typeof coords === 'number') return Math.round(coords * 1000000) / 1000000;
+        if (Array.isArray(coords)) return coords.map(roundCoords);
+        return coords;
+      };
+
+      if (geojson && geojson.features) {
+        geojson.features.forEach(f => {
+          if (f.geometry && f.geometry.coordinates) {
+            f.geometry.coordinates = roundCoords(f.geometry.coordinates);
+          }
+          if (f.properties) {
+            Object.keys(f.properties).forEach(k => {
+              if (f.properties[k] === null || f.properties[k] === '') {
+                delete f.properties[k];
+              }
+            });
+          }
+        });
+      }
+
       const count = geojson.features ? geojson.features.length : 0;
       const jsonFileName = `${name}.json`;
       const outputPath = path.join(source.outputDir, jsonFileName);

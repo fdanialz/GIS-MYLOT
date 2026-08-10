@@ -11,15 +11,10 @@ dist
 dist-ssr
 *.local
 
-# Large zip archives & raw shapefile binaries (>45MB)
+# Large zip archives & raw shapefile binaries
 *.zip
 *.shp
 *.dbf
-public/data/*/V_NDCDBLOT_region.json
-public/data/*/NDCDBBDY_polyline.json
-public/data/*/NDCDB LOT *.json
-public/data/*/JEMPOL NDCDB BARU_region.json
-public/data/*/V_TRANSITTION_STN_point.json
 
 # Editor directories and files
 .vscode/*

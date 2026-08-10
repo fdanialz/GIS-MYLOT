@@ -9,14 +9,14 @@ import MapViewer from './components/MapViewer';
 import ReportModal from './components/ReportModal';
 import { Layers, Search, Target, Cpu, BarChart3, PanelLeftOpen } from 'lucide-react';
 import { SUMMARY_STATS_NS, RIZAB_MELAYU_NS, HUTAN_SIMPAN_NS, RIZAB_ORANG_ASLI_NS } from './data/negeriSembilanData';
-import { 
-  ALL_LAYERS_CONFIG, 
-  SEREMBAN_LAYERS_CONFIG, 
+import {
+  ALL_LAYERS_CONFIG,
+  SEREMBAN_LAYERS_CONFIG,
   JEMPOL_LAYERS_CONFIG,
   PD_LAYERS_CONFIG,
   REMBAU_LAYERS_CONFIG,
   TAMPIN_LAYERS_CONFIG,
-  DAERAH_CENTROIDS 
+  DAERAH_CENTROIDS
 } from './utils/daerahLoader';
 
 export default function App() {
@@ -69,7 +69,7 @@ export default function App() {
   // Handle Search Result Selection
   const handleSelectSearchResult = (result) => {
     if (!result) return;
-    
+
     // Automatically turn on the layer if it's currently disabled
     if (result.layerId && !layers[result.layerId]) {
       setLayers(prev => ({
@@ -175,11 +175,14 @@ export default function App() {
     setSelectedDaerah(daerahId);
     const targetLoc = DAERAH_CENTROIDS[daerahId] || DAERAH_CENTROIDS.all;
     setSelectedLocation(targetLoc);
+
+    // Auto toggle off all active layers when switching location/daerah to prevent browser memory crash
+    setLayers(initialLayers);
   };
 
   return (
     <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <Header 
+      <Header
         onOpenQgisModal={() => setActiveTab('qgis')}
         onOpenReportModal={() => setShowReportModal(true)}
         isSidebarOpen={isSidebarOpen}
@@ -202,8 +205,8 @@ export default function App() {
 
         {/* Left Sidebar / Mobile Bottom Sheet Control Panel */}
         <aside className={`app-sidebar ${isSidebarOpen ? 'open' : 'closed'}`}>
-          <div 
-            className="mobile-drawer-handle mobile-only" 
+          <div
+            className="mobile-drawer-handle mobile-only"
             onClick={() => setIsSidebarOpen(false)}
             title="Tutup Bottom Sheet"
           >
@@ -212,31 +215,31 @@ export default function App() {
 
           <nav className="sidebar-tabs">
 
-            <button 
+            <button
               className={`tab-btn ${activeTab === 'layers' ? 'active' : ''}`}
               onClick={() => setActiveTab('layers')}
             >
               <Layers size={16} /> Lapisan
             </button>
-            <button 
+            <button
               className={`tab-btn ${activeTab === 'search' ? 'active' : ''}`}
               onClick={() => setActiveTab('search')}
             >
               <Search size={16} /> Carian Lot
             </button>
-            <button 
+            <button
               className={`tab-btn ${activeTab === 'analysis' ? 'active' : ''}`}
               onClick={() => setActiveTab('analysis')}
             >
               <Target size={16} /> Analisis
             </button>
-            <button 
+            <button
               className={`tab-btn ${activeTab === 'qgis' ? 'active' : ''}`}
               onClick={() => setActiveTab('qgis')}
             >
               <Cpu size={16} /> QGIS
             </button>
-            <button 
+            <button
               className={`tab-btn ${activeTab === 'dashboard' ? 'active' : ''}`}
               onClick={() => setActiveTab('dashboard')}
             >
@@ -246,7 +249,7 @@ export default function App() {
 
           <div className="sidebar-content">
             {activeTab === 'layers' && (
-              <LayerControl 
+              <LayerControl
                 layers={layers}
                 setLayers={setLayers}
                 opacity={opacity}
@@ -263,21 +266,21 @@ export default function App() {
             )}
 
             {activeTab === 'search' && (
-              <SearchPanel 
+              <SearchPanel
                 onSelectLocation={handleSelectLocation}
                 onSelectSearchResult={handleSelectSearchResult}
               />
             )}
 
             {activeTab === 'analysis' && (
-              <SpatialAnalysis 
+              <SpatialAnalysis
                 clickedCoords={clickedCoords}
                 onBufferCreated={handleBufferCreated}
               />
             )}
 
             {activeTab === 'qgis' && (
-              <QgisIntegration 
+              <QgisIntegration
                 onCustomDataImported={handleCustomDataImported}
               />
             )}
@@ -290,7 +293,7 @@ export default function App() {
 
         {/* Floating Sidebar Toggle Button on Map when Sidebar is closed */}
         {!isSidebarOpen && (
-          <button 
+          <button
             className="floating-sidebar-toggle"
             onClick={() => setIsSidebarOpen(true)}
             title="Buka Sidebar Panel"
@@ -301,7 +304,7 @@ export default function App() {
 
         {/* GIS Map Canvas */}
         <main className="map-main">
-          <MapViewer 
+          <MapViewer
             layers={layers}
             opacity={opacity}
             selectedLocation={selectedLocation}
