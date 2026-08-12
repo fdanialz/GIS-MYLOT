@@ -355,6 +355,7 @@ export default function MapViewer({
         center={NEGERI_SEMBILAN_BOUNDS.center} 
         zoom={NEGERI_SEMBILAN_BOUNDS.zoom} 
         preferCanvas={true}
+        attributionControl={false}
         style={{ width: '100%', height: '100%' }}
       >
         <TileLayer 
@@ -723,29 +724,34 @@ export default function MapViewer({
         })}
       </MapContainer>
 
-      {/* Professional GIS Canvas Footer Status Bar */}
+      {/* Compounded Single-Line GIS Canvas Footer Status Bar */}
       <footer className="map-status-bar">
-        <div className="status-item">
-          <span className="status-label">LAT:</span>
-          <span className="status-value mono">{cursorCoords.lat.toFixed(5)}° N</span>
+        <div className="status-left">
+          <div className="status-item">
+            <span className="status-label">LAT:</span>
+            <span className="status-value mono">{cursorCoords.lat.toFixed(5)}° N</span>
+          </div>
+          <div className="status-divider">|</div>
+          <div className="status-item">
+            <span className="status-label">LNG:</span>
+            <span className="status-value mono">{cursorCoords.lng.toFixed(5)}° E</span>
+          </div>
+          <div className="status-divider">|</div>
+          <div className="status-item">
+            <span className="status-label">ZOOM:</span>
+            <span className="status-value mono">Z{currentZoom}</span>
+          </div>
+          <div className="status-divider desktop-only">|</div>
+          <div className="status-item desktop-only">
+            <span className="status-label">CRS:</span>
+            <span className="status-value mono">WGS 84 (EPSG:4326)</span>
+          </div>
         </div>
-        <div className="status-divider">|</div>
-        <div className="status-item">
-          <span className="status-label">LNG:</span>
-          <span className="status-value mono">{cursorCoords.lng.toFixed(5)}° E</span>
-        </div>
-        <div className="status-divider">|</div>
-        <div className="status-item">
-          <span className="status-label">ZOOM:</span>
-          <span className="status-value mono">Z{currentZoom}</span>
-        </div>
-        <div className="status-divider">|</div>
-        <div className="status-item">
-          <span className="status-label">CRS:</span>
-          <span className="status-value mono">WGS 84 (EPSG:4326)</span>
-        </div>
+
         <div className="status-right">
-          <span className="status-tag">JUPEM Spatial Engine</span>
+          <span className="status-attribution">
+            Leaflet &copy; <a href="https://www.esri.com" target="_blank" rel="noreferrer">Esri World Imagery</a> &copy; JUPEM
+          </span>
         </div>
       </footer>
     </div>
