@@ -38,9 +38,9 @@ export default function App() {
   );
   const [selectedDaerah, setSelectedDaerah] = useState('all'); // 'all', 'seremban', 'jempol', 'pd', 'rembau', 'tampin'
 
-  // Initialize layer states: enable default layers from official JUPEM shapefile datasets
+  // Initialize layer states: all layers toggled OFF by default on load for optimal performance
   const initialLayers = ALL_LAYERS_CONFIG.reduce((acc, cfg) => {
-    acc[cfg.id] = !!cfg.defaultEnabled;
+    acc[cfg.id] = false;
     return acc;
   }, {});
 
