@@ -175,20 +175,21 @@ export default function Header({
           <span className="theme-toggle-text">{theme === 'light' ? "Dark Mode" : "Light Mode"}</span>
         </button>
 
-        {/* Admin Login Button / Logged-in Badge (Sebelah Kiri Jumlah Pelawat) */}
+        {/* Admin Login / Log Keluar Button (Sebelah Kiri Jumlah Pelawat) */}
         {isAdminLoggedIn ? (
-          <div className="admin-active-badge" title="Sesi Pentadbir Aktif: adminns@gmail.com">
-            <div className="admin-badge-left">
+          <div className="admin-logged-group">
+            <div className="admin-status-pill" title="Sesi Pentadbir Aktif: adminns@gmail.com">
               <ShieldCheck size={14} className="text-indigo-400" />
-              <span className="admin-badge-text">Admin NS</span>
+              <span>Admin NS</span>
             </div>
             <button 
               onClick={onAdminLogout} 
-              className="admin-logout-btn" 
-              title="Log Keluar Pentadbir"
+              className="admin-logout-prominent-btn" 
+              title="Log Keluar dari Mod Pentadbir"
               aria-label="Log Keluar Pentadbir"
             >
-              <LogOut size={12} />
+              <LogOut size={13} />
+              <span>Log Keluar</span>
             </button>
           </div>
         ) : (
