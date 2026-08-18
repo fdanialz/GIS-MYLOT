@@ -448,25 +448,6 @@ body {
   gap: 0.85rem;
 }
 
-.admin-preset-badge {
-  background: rgba(99, 102, 241, 0.08);
-  border: 1px dashed rgba(99, 102, 241, 0.4);
-  border-radius: 6px;
-  padding: 0.4rem 0.65rem;
-  font-size: 0.72rem;
-  color: var(--text-main);
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-
-.admin-preset-badge:hover {
-  background: rgba(99, 102, 241, 0.15);
-  border-color: #6366f1;
-}
-
 .admin-form-group {
   display: flex;
   flex-direction: column;
@@ -564,23 +545,94 @@ body {
   box-shadow: 0 6px 16px rgba(99, 102, 241, 0.45);
 }
 
-.admin-login-success-view {
-  padding: 1.5rem 0.5rem;
+/* Pop-up Alert: Success / Error Notification */
+.admin-alert-popup {
+  background: var(--bg-surface);
+  border-radius: 16px;
+  padding: 1.75rem 1.5rem;
+  width: 100%;
+  max-width: 360px;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  animation: fadeInMsg 0.25s ease-out;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+  animation: slideUpFade 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1.5px solid var(--border-color);
 }
 
-.admin-success-circle {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background: rgba(16, 185, 129, 0.15);
+.admin-alert-popup.popup-error {
+  border-color: rgba(239, 68, 68, 0.4);
+  background: var(--bg-surface);
+}
+
+.admin-alert-popup.popup-success {
+  border-color: rgba(16, 185, 129, 0.4);
+  background: var(--bg-surface);
+}
+
+.admin-alert-icon-wrap {
+  margin-bottom: 0.75rem;
+}
+
+.admin-alert-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 0.4rem;
+  line-height: 1.2;
+}
+
+.popup-error .admin-alert-title {
+  color: #ef4444;
+}
+
+.popup-success .admin-alert-title {
+  color: #10b981;
+}
+
+.admin-alert-desc {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+  margin-bottom: 1.15rem;
+}
+
+.admin-alert-action-btn {
+  width: 100%;
+  padding: 0.55rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s;
+}
+
+.admin-alert-action-btn.error-btn {
+  background: #ef4444;
+  color: #ffffff;
+}
+
+.admin-alert-action-btn.error-btn:hover {
+  background: #dc2626;
+}
+
+.admin-alert-loading {
+  font-size: 0.75rem;
+  color: #10b981;
+  font-weight: 600;
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 0.4rem;
+}
+
+.admin-alert-loading-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  animation: visitorPulse 1.2s infinite;
 }
 
 /* Visitor Counter Header Badge Button */

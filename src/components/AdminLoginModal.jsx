@@ -1,25 +1,53 @@
 import React, { useState } from 'react';
-import { ShieldCheck, Lock, Mail, X, CheckCircle2, AlertCircle, Sparkles, LogIn, Eye, EyeOff } from 'lucide-react';
+import { 
+  ShieldCheck, 
+  Lock, 
+  Mail, 
+  X, 
+  CheckCircle2, 
+  XCircle, 
+  LogIn, 
+  Eye, 
+  EyeOff,
+  AlertTriangle
+} from 'lucide-react';
 
 export default function AdminLoginModal({ isOpen, onClose, onLoginSuccess }) {
-  const [email, setEmail] = useState('adminns@gmail.com');
-  const [password, setPassword] = useState('adminns@gmail.com');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [errorMsg, setErrorMsg] = useState('');
-  const [isSuccess, setIsSuccess] = useState(false);
+  
+  // Alert popup states: 'none', 'error', 'success'
+  const [statusPopup, setStatusPopup] = useState('none');
+  const [popupMessage, setPopupMessage] = useState('');
 
   if (!isOpen) return null;
 
+  const handleCloseAll = () => {
+    setEmail('');
+    setPassword('');
+    setStatusPopup('none');
+    setPopupMessage('');
+    onClose();
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    setErrorMsg('');
 
     const cleanEmail = email.trim().toLowerCase();
     const cleanPassword = password.trim();
 
-    // Required credentials: adminns@gmail.com / adminns@gmail.com
+    if (!cleanEmail || !cleanPassword) {
+      setPopupMessage('Sila masukkan emel dan kata laluan lengkap.');
+      setStatusPopup('error');
+      return;
+    }
+
+    // Verify credentials
     if (cleanEmail === 'adminns@gmail.com' && cleanPassword === 'adminns@gmail.com') {
-      setIsSuccess(true);
+      setPopupMessage('Emel dan kata laluan adalah betul. Anda telah berjaya log masuk sebagai Pentadbir MRIS.');
+      setStatusPopup('success');
+
       setTimeout(() => {
         if (onLoginSuccess) {
           onLoginSuccess({
@@ -28,22 +56,16 @@ export default function AdminLoginModal({ isOpen, onClose, onLoginSuccess }) {
             role: 'Super Admin'
           });
         }
-        setIsSuccess(false);
-        onClose();
-      }, 700);
+        handleCloseAll();
+      }, 1500);
     } else {
-      setErrorMsg('Kredensial tidak sah. Sila masukkan emel dan kata laluan: adminns@gmail.com');
+      setPopupMessage('Emel atau kata laluan yang dimasukkan adalah salah. Sila pastikan maklumat log masuk anda tepat.');
+      setStatusPopup('error');
     }
   };
 
-  const handleQuickAutofill = () => {
-    setEmail('adminns@gmail.com');
-    setPassword('adminns@gmail.com');
-    setErrorMsg('');
-  };
-
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="modal-overlay" onClick={handleCloseAll}>
       <div className="admin-login-card" onClick={(e) => e.stopPropagation()}>
         {/* Modal Header */}
         <div className="admin-login-header">
@@ -58,7 +80,7 @@ export default function AdminLoginModal({ isOpen, onClose, onLoginSuccess }) {
           </div>
           <button 
             type="button" 
-            onClick={onClose}
+            onClick={handleCloseAll}
             className="close-btn"
             title="Tutup"
           >
@@ -68,86 +90,100 @@ export default function AdminLoginModal({ isOpen, onClose, onLoginSuccess }) {
 
         {/* Modal Body */}
         <div className="admin-login-body">
-          {isSuccess ? (
-            <div className="admin-login-success-view">
-              <div className="admin-success-circle">
-                <CheckCircle2 size={36} color="#10b981" />
-              </div>
-              <div style={{ fontWeight: 700, fontSize: '1rem', color: '#10b981', marginTop: '0.5rem' }}>
-                Log Masuk Berjaya!
-              </div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
-                Selamat kembali, Pentadbir Negeri Sembilan (adminns@gmail.com).
+          {/* Main Login Form */}
+          <form onSubmit={handleSubmit} className="admin-login-form">
+            {/* Email Input */}
+            <div className="admin-form-group">
+              <label className="admin-form-label">Emel Pentadbir:</label>
+              <div className="admin-input-wrapper">
+                <Mail size={15} className="admin-input-icon" />
+                <input 
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Masukkan emel anda"
+                  className="admin-form-input"
+                  autoFocus
+                />
               </div>
             </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="admin-login-form">
-              {/* Quick Preset Badge */}
-              <div className="admin-preset-badge" onClick={handleQuickAutofill} title="Klik untuk autofill kredensial rasmi">
-                <Sparkles size={13} color="#6366f1" />
-                <span>Kredensial Rasmi: <strong>adminns@gmail.com</strong></span>
+
+            {/* Password Input */}
+            <div className="admin-form-group">
+              <label className="admin-form-label">Kata Laluan:</label>
+              <div className="admin-input-wrapper">
+                <Lock size={15} className="admin-input-icon" />
+                <input 
+                  type={showPassword ? "text" : "password"}
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Masukkan kata laluan anda"
+                  className="admin-form-input"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="admin-password-toggle-btn"
+                  title={showPassword ? "Sembunyi kata laluan" : "Papar kata laluan"}
+                >
+                  {showPassword ? <EyeOff size={14} /> : <Eye size={14} />}
+                </button>
               </div>
+            </div>
 
-              {/* Email Input */}
-              <div className="admin-form-group">
-                <label className="admin-form-label">Emel Pentadbir:</label>
-                <div className="admin-input-wrapper">
-                  <Mail size={15} className="admin-input-icon" />
-                  <input 
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="adminns@gmail.com"
-                    className="admin-form-input"
-                  />
-                </div>
-              </div>
-
-              {/* Password Input */}
-              <div className="admin-form-group">
-                <label className="admin-form-label">Kata Laluan:</label>
-                <div className="admin-input-wrapper">
-                  <Lock size={15} className="admin-input-icon" />
-                  <input 
-                    type={showPassword ? "text" : "password"}
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••••••"
-                    className="admin-form-input"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="admin-password-toggle-btn"
-                    title={showPassword ? "Sembunyi kata laluan" : "Papar kata laluan"}
-                  >
-                    {showPassword ? <EyeOff size={14} /> : <Eye size={14} />}
-                  </button>
-                </div>
-              </div>
-
-              {/* Error Message */}
-              {errorMsg && (
-                <div className="admin-error-box">
-                  <AlertCircle size={14} />
-                  <span>{errorMsg}</span>
-                </div>
-              )}
-
-              {/* Submit Button */}
-              <button 
-                type="submit"
-                className="admin-login-submit-btn"
-              >
-                <LogIn size={16} />
-                <span>Log Masuk Sebagai Admin</span>
-              </button>
-            </form>
-          )}
+            {/* Submit Button */}
+            <button 
+              type="submit"
+              className="admin-login-submit-btn"
+            >
+              <LogIn size={16} />
+              <span>Log Masuk</span>
+            </button>
+          </form>
         </div>
       </div>
+
+      {/* Pop-up Alert: Emel/Password Salah atau Berjaya */}
+      {statusPopup !== 'none' && (
+        <div className="modal-overlay" style={{ zIndex: 2500 }} onClick={() => statusPopup === 'error' && setStatusPopup('none')}>
+          <div 
+            className={`admin-alert-popup ${statusPopup === 'success' ? 'popup-success' : 'popup-error'}`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="admin-alert-icon-wrap">
+              {statusPopup === 'success' ? (
+                <CheckCircle2 size={44} color="#10b981" />
+              ) : (
+                <XCircle size={44} color="#ef4444" />
+              )}
+            </div>
+
+            <div className="admin-alert-title">
+              {statusPopup === 'success' ? 'Berjaya Log Masuk!' : 'Emel atau Kata Laluan Salah'}
+            </div>
+
+            <div className="admin-alert-desc">
+              {popupMessage}
+            </div>
+
+            {statusPopup === 'error' ? (
+              <button 
+                type="button"
+                onClick={() => setStatusPopup('none')}
+                className="admin-alert-action-btn error-btn"
+              >
+                Cuba Semula
+              </button>
+            ) : (
+              <div className="admin-alert-loading">
+                <span className="admin-alert-loading-dot" /> Sedang memuatkan paparan...
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
