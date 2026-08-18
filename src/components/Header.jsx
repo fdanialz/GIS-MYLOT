@@ -18,9 +18,14 @@ import {
   Calendar,
   FileText,
   RotateCcw,
-  Sparkles
+  Sparkles,
+  ShieldCheck,
+  LogIn,
+  LogOut,
+  UserCheck
 } from 'lucide-react';
 import { getVisitorStats, incrementVisitorCount } from '../utils/visitorTracker';
+import AdminLoginModal from './AdminLoginModal';
 
 export default function Header({ 
   onOpenReportModal, 
@@ -34,9 +39,15 @@ export default function Header({
 }) {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showVisitorModal, setShowVisitorModal] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const [visitorStats, setVisitorStats] = useState(() => getVisitorStats());
   const [liveActiveUsers, setLiveActiveUsers] = useState(4);
   const [isResetting, setIsResetting] = useState(false);
+
+  // Admin Auth State with localStorage persistence
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(() => {
+    return localStorage.getItem('mris_admin_logged_in') === 'true';
+  });
 
   // Initialize and track visitor on page mount
   useEffect(() => {
@@ -74,6 +85,18 @@ export default function Header({
     setTimeout(() => {
       setIsResetting(false);
     }, 600);
+  };
+
+  const handleLoginSuccess = (adminInfo) => {
+    setIsAdminLoggedIn(true);
+    localStorage.setItem('mris_admin_logged_in', 'true');
+    localStorage.setItem('mris_admin_email', adminInfo.email);
+  };
+
+  const handleAdminLogout = () => {
+    setIsAdminLoggedIn(false);
+    localStorage.removeItem('mris_admin_logged_in');
+    localStorage.removeItem('mris_admin_email');
   };
 
   const districtList = [
@@ -166,6 +189,34 @@ export default function Header({
           <span className="theme-toggle-text">{theme === 'light' ? "Dark Mode" : "Light Mode"}</span>
         </button>
 
+        {/* Admin Login Button / Logged-in Badge (Sebelah Kiri Jumlah Pelawat) */}
+        {isAdminLoggedIn ? (
+          <div className="admin-active-badge" title="Sesi Pentadbir Aktif: adminns@gmail.com">
+            <div className="admin-badge-left">
+              <ShieldCheck size={14} className="text-indigo-400" />
+              <span className="admin-badge-text">Admin NS</span>
+            </div>
+            <button 
+              onClick={handleAdminLogout} 
+              className="admin-logout-btn" 
+              title="Log Keluar Pentadbir"
+              aria-label="Log Keluar Pentadbir"
+            >
+              <LogOut size={12} />
+            </button>
+          </div>
+        ) : (
+          <button 
+            onClick={() => setShowLoginModal(true)}
+            className="admin-login-btn"
+            title="Log Masuk Pentadbir (adminns@gmail.com)"
+            aria-label="Log Masuk Admin"
+          >
+            <ShieldCheck size={14} />
+            <span>Log Masuk</span>
+          </button>
+        )}
+
         {/* Real-time Visitor Counter Badge Button */}
         <button 
           onClick={() => setShowVisitorModal(true)}
@@ -204,6 +255,27 @@ export default function Header({
               <span>Set Semula (Untick Semua & Ringankan Memori)</span>
             </button>
 
+            {/* Mobile Admin Item */}
+            {isAdminLoggedIn ? (
+              <button 
+                onClick={() => { handleAdminLogout(); setShowMobileMenu(false); }}
+                className="mobile-popover-item"
+                style={{ color: '#ef4444' }}
+              >
+                <LogOut size={15} />
+                <span>Log Keluar Admin (adminns@gmail.com)</span>
+              </button>
+            ) : (
+              <button 
+                onClick={() => { setShowLoginModal(true); setShowMobileMenu(false); }}
+                className="mobile-popover-item"
+                style={{ color: '#6366f1' }}
+              >
+                <ShieldCheck size={15} />
+                <span>Log Masuk Pentadbir (Admin)</span>
+              </button>
+            )}
+
             {/* Mobile Visitor Counter Item */}
             <button 
               onClick={() => { setShowVisitorModal(true); setShowMobileMenu(false); }}
@@ -238,6 +310,13 @@ export default function Header({
           </div>
         )}
       </div>
+
+      {/* Admin Login Modal */}
+      <AdminLoginModal
+        isOpen={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+        onLoginSuccess={handleLoginSuccess}
+      />
 
       {/* Visitor Stats Popover Modal */}
       {showVisitorModal && (
