@@ -3,10 +3,11 @@ import Header from './components/Header';
 import LayerControl from './components/LayerControl';
 import SearchPanel from './components/SearchPanel';
 import ChatbotSorting from './components/ChatbotSorting';
+import QgisIntegration from './components/QgisIntegration';
 import Dashboard from './components/Dashboard';
 import MapViewer from './components/MapViewer';
 import ReportModal from './components/ReportModal';
-import { Layers, Search, BarChart3, PanelLeftOpen, Bot, X, ChevronDown } from 'lucide-react';
+import { Layers, Search, BarChart3, PanelLeftOpen, Bot, X, ChevronDown, Cpu, FileText } from 'lucide-react';
 import { SUMMARY_STATS_NS, RIZAB_MELAYU_NS, HUTAN_SIMPAN_NS, RIZAB_ORANG_ASLI_NS } from './data/negeriSembilanData';
 import {
   ALL_LAYERS_CONFIG,
@@ -177,12 +178,24 @@ export default function App() {
     setLayers(initialLayers);
   };
 
+  // Reset all layers, map state, and clear memory for fast lightweight performance
+  const handleResetAll = () => {
+    setLayers(initialLayers);
+    setSelectedDaerah('all');
+    setSelectedLocation(DAERAH_CENTROIDS.all);
+    setClickedCoords(null);
+    setBufferData(null);
+    setCustomImportedData(null);
+    setActiveTab('layers');
+  };
+
   return (
     <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Header
         onOpenQgisModal={() => setActiveTab('qgis')}
         onOpenReportModal={() => setShowReportModal(true)}
         onOpenChatbot={() => setIsFloatingChatOpen(prev => !prev)}
+        onResetAll={handleResetAll}
         isSidebarOpen={isSidebarOpen}
         setIsSidebarOpen={setIsSidebarOpen}
         selectedDaerah={selectedDaerah}
@@ -213,26 +226,39 @@ export default function App() {
 
           <nav className="sidebar-tabs">
             <button
-              className={`tab-btn ${activeTab === 'layers' ? 'active' : ''}`}
-              onClick={() => setActiveTab('layers')}
-            >
-              <Layers size={16} /> Lapisan
-            </button>
-            <button
               className={`tab-btn ${activeTab === 'search' ? 'active' : ''}`}
               onClick={() => setActiveTab('search')}
             >
-              <Search size={16} /> Carian Lot
+              <Search size={15} /> Carian Lot
             </button>
             <button
-              className={`tab-btn ${activeTab === 'dashboard' ? 'active' : ''}`}
-              onClick={() => setActiveTab('dashboard')}
+              className={`tab-btn ${activeTab === 'layers' ? 'active' : ''}`}
+              onClick={() => setActiveTab('layers')}
             >
-              <BarChart3 size={16} /> Dashboard
+              <Layers size={15} /> Lapisan
+            </button>
+            <button
+              className={`tab-btn ${activeTab === 'qgis' ? 'active' : ''}`}
+              onClick={() => setActiveTab('qgis')}
+            >
+              <Cpu size={15} /> QGIS
+            </button>
+            <button
+              className="tab-btn"
+              onClick={() => setShowReportModal(true)}
+            >
+              <FileText size={15} /> Laporan PDF
             </button>
           </nav>
 
           <div className="sidebar-content">
+            {activeTab === 'search' && (
+              <SearchPanel
+                onSelectLocation={handleSelectLocation}
+                onSelectSearchResult={handleSelectSearchResult}
+              />
+            )}
+
             {activeTab === 'layers' && (
               <LayerControl
                 layers={layers}
@@ -250,10 +276,9 @@ export default function App() {
               />
             )}
 
-            {activeTab === 'search' && (
-              <SearchPanel
-                onSelectLocation={handleSelectLocation}
-                onSelectSearchResult={handleSelectSearchResult}
+            {activeTab === 'qgis' && (
+              <QgisIntegration
+                onCustomDataImported={handleCustomDataImported}
               />
             )}
 
@@ -289,56 +314,61 @@ export default function App() {
         </main>
       </div>
 
-      {/* Floating Bottom-Right Chatbot Wrapper */}
+      {/* Floating Bottom-Right Chatbot Wrapper (Image 1 #1) */}
       <div className="floating-bot-wrapper">
-        {/* Circular Floating Bot Avatar Button */}
         {!isFloatingChatOpen && (
           <div
-            className="bot-avatar-trigger"
+            className="mris-teaser-trigger"
             onClick={() => setIsFloatingChatOpen(true)}
-            title="Buka Pembantu GIS & Sorting Lot"
+            title="Buka Chatbot Mr. MRIS"
           >
-            <div className="bot-avatar-circle">
-              <Bot size={26} color="#ffffff" />
-              <span className="online-status-dot" />
+            {/* Green Teaser Bubble */}
+            <div className="mris-teaser-bubble">
+              Hai 👋 saya MRIS, rakan carian TRM anda. Boleh saya bantu?
             </div>
-            <div className="bot-avatar-badge">
-              PEMBANTU GIS
+            
+            {/* Avatar on the right */}
+            <div className="mris-teaser-avatar-wrap">
+              <img 
+                src={`${import.meta.env.BASE_URL}mr_mris_avatar.svg`} 
+                alt="Mr. MRIS" 
+                className="mris-teaser-avatar-img"
+              />
+              <span className="online-status-dot" />
             </div>
           </div>
         )}
       </div>
 
-      {/* Floating Bottom-Right Chatbot Popup Window */}
+      {/* Floating Bottom-Right Chatbot Popup Window (Image 1 #2 & Image 2 #3) */}
       {isFloatingChatOpen && (
-        <div className="floating-chat-window">
-          <div className="floating-chat-header">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
-              <div className="header-avatar-circle">
-                <Bot size={18} color="#ffffff" />
-                <span className="online-status-dot-sm" />
-              </div>
-              <div>
-                <div style={{ fontWeight: 700, fontSize: '0.85rem', color: '#ffffff', lineHeight: 1.2 }}>
-                  Pembantu GIS MRIS
-                </div>
-                <div style={{ fontSize: '0.62rem', color: '#4ade80', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.25rem', marginTop: '0.1rem' }}>
-                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#4ade80', display: 'inline-block' }} /> ONLINE
-                </div>
-              </div>
+        <div className="mris-chat-window">
+          {/* Vibrant Green Header */}
+          <div className="mris-chat-header">
+            <div className="mris-header-left">
+              <img 
+                src={`${import.meta.env.BASE_URL}mr_mris_avatar.svg`} 
+                alt="Mr. MRIS" 
+                className="mris-header-avatar"
+              />
+              <span className="mris-header-title">Mr. MRIS</span>
             </div>
             <button
               onClick={() => setIsFloatingChatOpen(false)}
-              className="chat-close-btn"
-              title="Minimakan / Tutup Chatbot"
+              className="mris-header-close-btn"
+              title="Tutup Chatbot"
+              aria-label="Tutup Chatbot"
             >
-              <X size={18} />
+              <X size={20} />
             </button>
           </div>
-          <div className="floating-chat-body">
+
+          {/* Chat Window Body */}
+          <div className="mris-chat-body">
             <ChatbotSorting
               onSelectLocation={handleSelectLocation}
               onSelectSearchResult={handleSelectSearchResult}
+              onClose={() => setIsFloatingChatOpen(false)}
             />
           </div>
         </div>

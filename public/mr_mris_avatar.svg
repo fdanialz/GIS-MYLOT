@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%">
+  <!-- Definitions & Filters -->
+  <defs>
+    <filter id="mris-shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000000" flood-opacity="0.15" />
+    </filter>
+  </defs>
+
+  <!-- Background Circle (Transparent/Clean) -->
+  <circle cx="60" cy="60" r="58" fill="transparent"/>
+
+  <!-- Yellow Chat Bubble Top Right -->
+  <g filter="url(#mris-shadow)" transform="translate(72, 8)">
+    <rect x="0" y="0" width="34" height="24" rx="6" fill="#eab308" stroke="#ca8a04" stroke-width="1.5" />
+    <path d="M 8 24 L 8 29 L 16 24 Z" fill="#eab308" stroke="#ca8a04" stroke-width="1.5" stroke-linejoin="round" />
+    <!-- Three horizontal lines inside bubble -->
+    <line x1="6" y1="7" x2="28" y2="7" stroke="#713f12" stroke-width="2" stroke-linecap="round" />
+    <line x1="6" y1="12" x2="24" y2="12" stroke="#713f12" stroke-width="2" stroke-linecap="round" />
+    <line x1="6" y1="17" x2="18" y2="17" stroke="#713f12" stroke-width="2" stroke-linecap="round" />
+  </g>
+
+  <!-- Body / Shoulders (Red/Burgundy Shirt) -->
+  <path d="M 24 116 C 24 88 40 82 50 82 L 70 82 C 80 82 96 88 96 116 Z" fill="#b91c1c" />
+  <!-- Shirt Collar (V-neck / Crew neck) -->
+  <path d="M 50 82 L 60 94 L 70 82 Z" fill="#ffd1b3" />
+  <path d="M 48 82 C 54 96 66 96 72 82" stroke="#991b1b" stroke-width="2" fill="none" stroke-linecap="round" />
+
+  <!-- Neck -->
+  <rect x="52" y="68" width="16" height="18" rx="4" fill="#ffd1b3" />
+
+  <!-- Head / Face -->
+  <ellipse cx="60" cy="52" rx="20" ry="24" fill="#ffd1b3" />
+
+  <!-- Hair (Dark Brown / Black neat hair) -->
+  <path d="M 40 50 C 38 32 46 22 60 22 C 74 22 82 32 80 50 C 76 38 70 34 60 34 C 48 34 44 42 40 50 Z" fill="#1e293b" />
+  <!-- Hair Forehead Fringe -->
+  <path d="M 41 38 C 48 30 68 28 78 40 C 70 34 56 34 41 38 Z" fill="#0f172a" />
+
+  <!-- Ears -->
+  <circle cx="40" cy="54" r="6" fill="#ffd1b3" />
+  <circle cx="80" cy="54" r="6" fill="#ffd1b3" />
+
+  <!-- Eyebrows -->
+  <path d="M 47 43 Q 52 40 57 43" stroke="#1e293b" stroke-width="2" stroke-linecap="round" fill="none" />
+  <path d="M 63 43 Q 68 40 73 43" stroke="#1e293b" stroke-width="2" stroke-linecap="round" fill="none" />
+
+  <!-- Eyes -->
+  <circle cx="51" cy="48" r="2.5" fill="#1e293b" />
+  <circle cx="69" cy="48" r="2.5" fill="#1e293b" />
+  <circle cx="52" cy="47" r="0.8" fill="#ffffff" />
+  <circle cx="70" cy="47" r="0.8" fill="#ffffff" />
+
+  <!-- Nose -->
+  <path d="M 60 48 L 59 55 L 63 55" stroke="#e09e75" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+
+  <!-- Friendly Smile -->
+  <path d="M 53 59 Q 60 67 67 59" stroke="#991b1b" stroke-width="2" stroke-linecap="round" fill="none" />
+
+  <!-- Headset Band (Purple/Navy Arc) -->
+  <path d="M 37 54 C 37 26 83 26 83 54" stroke="#4338ca" stroke-width="4.5" stroke-linecap="round" fill="none" />
+
+  <!-- Headset Earcups (Purple & Cyan accents) -->
+  <g transform="translate(33, 45)">
+    <rect x="0" y="0" width="8" height="18" rx="4" fill="#6366f1" stroke="#312e81" stroke-width="1.5" />
+    <rect x="2" y="3" width="4" height="12" rx="2" fill="#818cf8" />
+  </g>
+  <g transform="translate(79, 45)">
+    <rect x="0" y="0" width="8" height="18" rx="4" fill="#6366f1" stroke="#312e81" stroke-width="1.5" />
+    <rect x="2" y="3" width="4" height="12" rx="2" fill="#818cf8" />
+  </g>
+
+  <!-- Headset Microphone Boom & Mic -->
+  <path d="M 37 58 C 37 72 48 74 57 71" stroke="#312e81" stroke-width="2.5" stroke-linecap="round" fill="none" />
+  <circle cx="57" cy="71" r="3.5" fill="#1e1b4b" stroke="#6366f1" stroke-width="1.5" />
+
+  <!-- Mini NS Flag Pin on collar/chest (Yellow, Red, Black) -->
+  <g transform="translate(18, 52)">
+    <rect x="0" y="0" width="16" height="11" rx="2" fill="#eab308" stroke="#1e293b" stroke-width="1" />
+    <!-- Diagonal halves (Red and Black) in canton -->
+    <polygon points="0,0 8,0 0,5.5" fill="#1e293b" />
+    <polygon points="8,0 8,5.5 0,5.5" fill="#dc2626" />
+  </g>
+</svg>

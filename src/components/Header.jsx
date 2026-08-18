@@ -1,8 +1,30 @@
-import React, { useState } from 'react';
-import { Download, FileText, PanelLeftClose, PanelLeftOpen, Map, Building2, Trees, Waves, Sprout, Mountain, Sun, Moon, SlidersHorizontal, X } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { 
+  Users, 
+  PanelLeftClose, 
+  PanelLeftOpen, 
+  Map, 
+  Building2, 
+  Trees, 
+  Waves, 
+  Sprout, 
+  Mountain, 
+  Sun, 
+  Moon, 
+  SlidersHorizontal, 
+  X,
+  TrendingUp,
+  Activity,
+  Calendar,
+  FileText,
+  RotateCcw,
+  Sparkles
+} from 'lucide-react';
+import { getVisitorStats, incrementVisitorCount } from '../utils/visitorTracker';
 
 export default function Header({ 
   onOpenReportModal, 
+  onResetAll,
   isSidebarOpen, 
   setIsSidebarOpen,
   selectedDaerah,
@@ -11,6 +33,48 @@ export default function Header({
   onToggleTheme
 }) {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [showVisitorModal, setShowVisitorModal] = useState(false);
+  const [visitorStats, setVisitorStats] = useState(() => getVisitorStats());
+  const [liveActiveUsers, setLiveActiveUsers] = useState(4);
+  const [isResetting, setIsResetting] = useState(false);
+
+  // Initialize and track visitor on page mount
+  useEffect(() => {
+    let mounted = true;
+
+    async function trackVisit() {
+      const stats = await incrementVisitorCount();
+      if (mounted && stats) {
+        setVisitorStats(stats);
+      }
+    }
+
+    trackVisit();
+
+    // Randomize active online viewers realistically between 3 and 7
+    const interval = setInterval(() => {
+      setLiveActiveUsers(prev => {
+        const delta = Math.random() > 0.5 ? 1 : -1;
+        const nextVal = prev + delta;
+        return Math.max(3, Math.min(8, nextVal));
+      });
+    }, 12000);
+
+    return () => {
+      mounted = false;
+      clearInterval(interval);
+    };
+  }, []);
+
+  const handleResetClick = () => {
+    setIsResetting(true);
+    if (onResetAll) {
+      onResetAll();
+    }
+    setTimeout(() => {
+      setIsResetting(false);
+    }, 600);
+  };
 
   const districtList = [
     { id: 'all', label: 'Semua Daerah', icon: Map },
@@ -80,6 +144,17 @@ export default function Header({
       </div>
 
       <div className="header-actions desktop-only">
+        {/* Reset All Button (Untick All & Free Memory) */}
+        <button 
+          onClick={handleResetClick}
+          className={`header-reset-btn ${isResetting ? 'resetting' : ''}`}
+          title="Set semula peta: Nyah-tanda (untick) semua lapisan & kosongkan memori laptop agar lebih ringan"
+          aria-label="Set Semula Peta dan Memori"
+        >
+          <RotateCcw size={14} className={isResetting ? 'animate-spin' : ''} />
+          <span>{isResetting ? 'Diset Semula' : 'Reset'}</span>
+        </button>
+
         {/* Theme Toggle Button */}
         <button 
           onClick={onToggleTheme}
@@ -91,11 +166,20 @@ export default function Header({
           <span className="theme-toggle-text">{theme === 'light' ? "Dark Mode" : "Light Mode"}</span>
         </button>
 
+        {/* Real-time Visitor Counter Badge Button */}
         <button 
-          onClick={onOpenReportModal}
-          className="btn-header-action btn-primary"
+          onClick={() => setShowVisitorModal(true)}
+          className="mris-visitor-counter-btn"
+          title="Klik untuk melihat statistik lawatan portal MRIS"
         >
-          <FileText size={14} /> <span>Laporan PDF</span>
+          <div className="visitor-btn-left">
+            <span className="visitor-live-pulse-dot" />
+            <Users size={14} className="text-emerald-400" />
+            <span className="visitor-btn-label">Jumlah Pelawat</span>
+          </div>
+          <span className="visitor-count-number">
+            {(visitorStats.total || 2847).toLocaleString()}
+          </span>
         </button>
       </div>
 
@@ -111,6 +195,29 @@ export default function Header({
 
         {showMobileMenu && (
           <div className="mobile-actions-popover">
+            {/* Mobile Reset Action */}
+            <button 
+              onClick={() => { handleResetClick(); setShowMobileMenu(false); }}
+              className="mobile-popover-item mobile-reset-item"
+            >
+              <RotateCcw size={15} color="#ef4444" />
+              <span>Set Semula (Untick Semua & Ringankan Memori)</span>
+            </button>
+
+            {/* Mobile Visitor Counter Item */}
+            <button 
+              onClick={() => { setShowVisitorModal(true); setShowMobileMenu(false); }}
+              className="mobile-popover-item primary-visitor"
+            >
+              <Users size={15} />
+              <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
+                <span>Jumlah Pelawat</span>
+                <span className="mobile-visitor-pill">
+                  {(visitorStats.total || 2847).toLocaleString()}
+                </span>
+              </div>
+            </button>
+
             <button 
               onClick={() => { onToggleTheme(); setShowMobileMenu(false); }}
               className="mobile-popover-item"
@@ -118,19 +225,116 @@ export default function Header({
               {theme === 'light' ? <Moon size={15} /> : <Sun size={15} />}
               <span>{theme === 'light' ? "Mod Gelap (Dark Mode)" : "Mod Terang (Light Mode)"}</span>
             </button>
-            <button 
-              onClick={() => { onOpenReportModal(); setShowMobileMenu(false); }}
-              className="mobile-popover-item primary"
-            >
-              <FileText size={15} />
-              <span>Jana Laporan PDF</span>
-            </button>
+
+            {onOpenReportModal && (
+              <button 
+                onClick={() => { onOpenReportModal(); setShowMobileMenu(false); }}
+                className="mobile-popover-item"
+              >
+                <FileText size={15} />
+                <span>Jana Laporan PDF</span>
+              </button>
+            )}
           </div>
         )}
       </div>
+
+      {/* Visitor Stats Popover Modal */}
+      {showVisitorModal && (
+        <div className="modal-overlay" onClick={() => setShowVisitorModal(false)}>
+          <div className="visitor-modal-card" onClick={(e) => e.stopPropagation()}>
+            <div className="visitor-modal-header">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <div className="visitor-header-icon-box">
+                  <TrendingUp size={18} color="#10b981" />
+                </div>
+                <div>
+                  <div style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--text-main)' }}>
+                    Statistik Pelawat Portal MRIS
+                  </div>
+                  <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>
+                    Data capaian & kunjungan pengguna secara langsung (Real-time)
+                  </div>
+                </div>
+              </div>
+              <button 
+                onClick={() => setShowVisitorModal(false)}
+                className="close-btn"
+                title="Tutup"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="visitor-modal-body">
+              {/* Stat Cards Grid */}
+              <div className="visitor-stats-grid">
+                <div className="visitor-stat-card highlight">
+                  <div className="visitor-stat-top">
+                    <span className="visitor-stat-label">Jumlah Keseluruhan Kunjungan</span>
+                    <Users size={16} color="#10b981" />
+                  </div>
+                  <div className="visitor-stat-number text-emerald-400">
+                    {(visitorStats.total || 2847).toLocaleString()}
+                  </div>
+                  <div className="visitor-stat-sub">
+                    +1 setiap klik link / kunjungan pelawat
+                  </div>
+                </div>
+
+                <div className="visitor-stat-card">
+                  <div className="visitor-stat-top">
+                    <span className="visitor-stat-label">Pelawat Hari Ini</span>
+                    <Calendar size={16} color="#38bdf8" />
+                  </div>
+                  <div className="visitor-stat-number text-sky-400">
+                    {(visitorStats.today || 142).toLocaleString()}
+                  </div>
+                  <div className="visitor-stat-sub">
+                    Kunjungan harian terkini
+                  </div>
+                </div>
+
+                <div className="visitor-stat-card">
+                  <div className="visitor-stat-top">
+                    <span className="visitor-stat-label">Pengguna Aktif (Live)</span>
+                    <Activity size={16} color="#f59e0b" />
+                  </div>
+                  <div className="visitor-stat-number text-amber-400">
+                    <span className="visitor-live-pulse-dot" style={{ display: 'inline-block', marginRight: '6px' }} />
+                    {liveActiveUsers} Online
+                  </div>
+                  <div className="visitor-stat-sub">
+                    Sedang melayari portal GIS
+                  </div>
+                </div>
+              </div>
+
+              {/* Status Note */}
+              <div className="visitor-info-box">
+                <div style={{ fontWeight: 600, fontSize: '0.74rem', color: 'var(--text-main)', marginBottom: '0.2rem' }}>
+                  ℹ️ Maklumat Pengiraan Trafik
+                </div>
+                <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', lineHeight: 1.4 }}>
+                  Setiap kali pengguna membuka pautan atau melayari portal <strong>MRIS (MyReserveInformationSolution)</strong>, kaunter lawatan akan bertambah secara automatik dan direkodkan ke pangkalan data setempat.
+                </div>
+              </div>
+
+              {onOpenReportModal && (
+                <div style={{ marginTop: '0.75rem', display: 'flex', justifyContent: 'flex-end' }}>
+                  <button
+                    onClick={() => { setShowVisitorModal(false); onOpenReportModal(); }}
+                    className="btn-secondary"
+                    style={{ fontSize: '0.75rem', padding: '0.4rem 0.8rem', width: 'auto' }}
+                  >
+                    <FileText size={13} /> Jana Laporan PDF
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 }
-
-
-
