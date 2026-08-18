@@ -33,11 +33,29 @@ export default function App() {
     setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
   };
 
-  const [activeTab, setActiveTab] = useState('layers');
+  const [activeTab, setActiveTab] = useState('search');
   const [isSidebarOpen, setIsSidebarOpen] = useState(
     () => typeof window === 'undefined' || window.innerWidth > 768
   );
   const [selectedDaerah, setSelectedDaerah] = useState('all'); // 'all', 'seremban', 'jempol', 'pd', 'rembau', 'tampin'
+
+  // Admin Auth State with localStorage persistence
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(() => {
+    return typeof window !== 'undefined' && localStorage.getItem('mris_admin_logged_in') === 'true';
+  });
+
+  const handleAdminLogin = (adminInfo) => {
+    setIsAdminLoggedIn(true);
+    localStorage.setItem('mris_admin_logged_in', 'true');
+    localStorage.setItem('mris_admin_email', adminInfo.email);
+  };
+
+  const handleAdminLogout = () => {
+    setIsAdminLoggedIn(false);
+    localStorage.removeItem('mris_admin_logged_in');
+    localStorage.removeItem('mris_admin_email');
+    setActiveTab(prev => (prev === 'qgis' ? 'search' : prev));
+  };
 
   // Initialize layer states: all layers toggled OFF by default on load for optimal performance
   const initialLayers = ALL_LAYERS_CONFIG.reduce((acc, cfg) => {
@@ -202,6 +220,9 @@ export default function App() {
         onSelectDaerah={handleSelectDaerah}
         theme={theme}
         onToggleTheme={toggleTheme}
+        isAdminLoggedIn={isAdminLoggedIn}
+        onAdminLogin={handleAdminLogin}
+        onAdminLogout={handleAdminLogout}
       />
 
 
@@ -237,18 +258,24 @@ export default function App() {
             >
               <Layers size={15} /> Lapisan
             </button>
-            <button
-              className={`tab-btn ${activeTab === 'qgis' ? 'active' : ''}`}
-              onClick={() => setActiveTab('qgis')}
-            >
-              <Cpu size={15} /> QGIS
-            </button>
-            <button
-              className="tab-btn"
-              onClick={() => setShowReportModal(true)}
-            >
-              <FileText size={15} /> Laporan PDF
-            </button>
+
+            {/* QGIS & Laporan PDF are Admin-Only features */}
+            {isAdminLoggedIn && (
+              <button
+                className={`tab-btn ${activeTab === 'qgis' ? 'active' : ''}`}
+                onClick={() => setActiveTab('qgis')}
+              >
+                <Cpu size={15} /> QGIS
+              </button>
+            )}
+            {isAdminLoggedIn && (
+              <button
+                className="tab-btn"
+                onClick={() => setShowReportModal(true)}
+              >
+                <FileText size={15} /> Laporan PDF
+              </button>
+            )}
           </nav>
 
           <div className="sidebar-content">

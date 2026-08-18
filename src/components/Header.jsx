@@ -35,7 +35,10 @@ export default function Header({
   selectedDaerah,
   onSelectDaerah,
   theme = 'light',
-  onToggleTheme
+  onToggleTheme,
+  isAdminLoggedIn,
+  onAdminLogin,
+  onAdminLogout
 }) {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showVisitorModal, setShowVisitorModal] = useState(false);
@@ -43,11 +46,6 @@ export default function Header({
   const [visitorStats, setVisitorStats] = useState(() => getVisitorStats());
   const [liveActiveUsers, setLiveActiveUsers] = useState(4);
   const [isResetting, setIsResetting] = useState(false);
-
-  // Admin Auth State with localStorage persistence
-  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(() => {
-    return localStorage.getItem('mris_admin_logged_in') === 'true';
-  });
 
   // Initialize and track visitor on page mount
   useEffect(() => {
@@ -85,18 +83,6 @@ export default function Header({
     setTimeout(() => {
       setIsResetting(false);
     }, 600);
-  };
-
-  const handleLoginSuccess = (adminInfo) => {
-    setIsAdminLoggedIn(true);
-    localStorage.setItem('mris_admin_logged_in', 'true');
-    localStorage.setItem('mris_admin_email', adminInfo.email);
-  };
-
-  const handleAdminLogout = () => {
-    setIsAdminLoggedIn(false);
-    localStorage.removeItem('mris_admin_logged_in');
-    localStorage.removeItem('mris_admin_email');
   };
 
   const districtList = [
@@ -197,7 +183,7 @@ export default function Header({
               <span className="admin-badge-text">Admin NS</span>
             </div>
             <button 
-              onClick={handleAdminLogout} 
+              onClick={onAdminLogout} 
               className="admin-logout-btn" 
               title="Log Keluar Pentadbir"
               aria-label="Log Keluar Pentadbir"
@@ -209,7 +195,7 @@ export default function Header({
           <button 
             onClick={() => setShowLoginModal(true)}
             className="admin-login-btn"
-            title="Log Masuk Pentadbir (adminns@gmail.com)"
+            title="Log Masuk Pentadbir (Admin)"
             aria-label="Log Masuk Admin"
           >
             <ShieldCheck size={14} />
@@ -258,7 +244,7 @@ export default function Header({
             {/* Mobile Admin Item */}
             {isAdminLoggedIn ? (
               <button 
-                onClick={() => { handleAdminLogout(); setShowMobileMenu(false); }}
+                onClick={() => { onAdminLogout && onAdminLogout(); setShowMobileMenu(false); }}
                 className="mobile-popover-item"
                 style={{ color: '#ef4444' }}
               >
@@ -298,7 +284,8 @@ export default function Header({
               <span>{theme === 'light' ? "Mod Gelap (Dark Mode)" : "Mod Terang (Light Mode)"}</span>
             </button>
 
-            {onOpenReportModal && (
+            {/* Only show PDF report in mobile if logged in as Admin */}
+            {isAdminLoggedIn && onOpenReportModal && (
               <button 
                 onClick={() => { onOpenReportModal(); setShowMobileMenu(false); }}
                 className="mobile-popover-item"
@@ -315,7 +302,7 @@ export default function Header({
       <AdminLoginModal
         isOpen={showLoginModal}
         onClose={() => setShowLoginModal(false)}
-        onLoginSuccess={handleLoginSuccess}
+        onLoginSuccess={onAdminLogin}
       />
 
       {/* Visitor Stats Popover Modal */}
@@ -399,7 +386,8 @@ export default function Header({
                 </div>
               </div>
 
-              {onOpenReportModal && (
+              {/* Only show PDF button in modal if logged in as Admin */}
+              {isAdminLoggedIn && onOpenReportModal && (
                 <div style={{ marginTop: '0.75rem', display: 'flex', justifyContent: 'flex-end' }}>
                   <button
                     onClick={() => { setShowVisitorModal(false); onOpenReportModal(); }}
