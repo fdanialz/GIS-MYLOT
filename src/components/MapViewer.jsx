@@ -411,9 +411,77 @@ export default function MapViewer({
           <Polygon
             positions={parseCoordinates(selectedLocation.feature.geometry.coordinates, selectedLocation.feature.geometry.type)}
             pathOptions={{
-              color: '#38bdf8',
-              fillColor: '#0284c7',
-              fillOpacity: 0.5,
+              color: (selectedLocation.layerName && selectedLocation.layerName.toLowerCase().includes('pembatalan')) ? '#ef4444' :
+                     (selectedLocation.layerName && selectedLocation.layerName.toLowerCase().includes('gantian')) ? '#3b82f6' :
+                     (selectedLocation.layerName && (selectedLocation.layerName.toLowerCase().includes('forest') || selectedLocation.layerName.toLowerCase().includes('hutan'))) ? '#10b981' :
+                     (selectedLocation.layerName && (selectedLocation.layerName.toLowerCase().includes('aborigine') || selectedLocation.layerName.toLowerCase().includes('orang asli'))) ? '#a855f7' : '#f59e0b',
+              fillColor: (selectedLocation.layerName && selectedLocation.layerName.toLowerCase().includes('pembatalan')) ? '#dc2626' :
+                         (selectedLocation.layerName && selectedLocation.layerName.toLowerCase().includes('gantian')) ? '#2563eb' :
+                         (selectedLocation.layerName && (selectedLocation.layerName.toLowerCase().includes('forest') || selectedLocation.layerName.toLowerCase().includes('hutan'))) ? '#059669' :
+                         (selectedLocation.layerName && (selectedLocation.layerName.toLowerCase().includes('aborigine') || selectedLocation.layerName.toLowerCase().includes('orang asli'))) ? '#9333ea' : '#facc15',
+              fillOpacity: 0.65,
+              weight: 3.5,
+              dashArray: '4, 4'
+            }}
+          >
+            <Popup>
+              <div className="popup-card">
+                <div className="popup-header" style={{ 
+                  color: (selectedLocation.layerName && selectedLocation.layerName.toLowerCase().includes('pembatalan')) ? '#ef4444' :
+                         (selectedLocation.layerName && selectedLocation.layerName.toLowerCase().includes('gantian')) ? '#3b82f6' :
+                         (selectedLocation.layerName && (selectedLocation.layerName.toLowerCase().includes('forest') || selectedLocation.layerName.toLowerCase().includes('hutan'))) ? '#10b981' :
+                         (selectedLocation.layerName && (selectedLocation.layerName.toLowerCase().includes('aborigine') || selectedLocation.layerName.toLowerCase().includes('orang asli'))) ? '#a855f7' : '#f59e0b'
+                }}>
+                  <MapPin size={15} /> {selectedLocation.label || 'Kawasan Lot Terpilih'}
+                </div>
+                <div className="popup-body-text">
+                  {selectedLocation.layerName && <div><strong>Kategori Lapisan:</strong> {selectedLocation.layerName}</div>}
+                  {selectedLocation.properties && selectedLocation.properties.mukim && <div><strong>Mukim:</strong> {selectedLocation.properties.mukim}</div>}
+                  {selectedLocation.properties && selectedLocation.properties.daerah && <div><strong>Daerah:</strong> {selectedLocation.properties.daerah}</div>}
+                  {selectedLocation.properties && selectedLocation.properties.noLot && <div><strong>No. Lot:</strong> <code className="mono-val">{selectedLocation.properties.noLot}</code></div>}
+                  {selectedLocation.properties && selectedLocation.properties.noWarta && <div><strong>No. Warta:</strong> {selectedLocation.properties.noWarta}</div>}
+                  {selectedLocation.properties && selectedLocation.properties.luasHektar && <div><strong>Keluasan:</strong> <span style={{ color: '#059669', fontWeight: 700 }}>{selectedLocation.properties.luasHektar} Ha</span></div>}
+                  {selectedLocation.properties && selectedLocation.properties.KELUASAN && <div><strong>Keluasan:</strong> <span style={{ color: '#059669', fontWeight: 700 }}>{selectedLocation.properties.KELUASAN} m²</span></div>}
+                  {selectedLocation.center && (
+                    <div className="popup-coords">
+                      Lat: {selectedLocation.center[0].toFixed(5)}° N, Lng: {selectedLocation.center[1].toFixed(5)}° E
+                    </div>
+                  )}
+                </div>
+                {selectedLocation.center && (
+                  <div className="popup-actions">
+                    <a 
+                      href={getGoogleMapsUrl(selectedLocation.center[0], selectedLocation.center[1])} 
+                      target="_blank" 
+                      rel="noreferrer" 
+                      className="gmaps-btn"
+                    >
+                      <ExternalLink size={12} /> Google Maps
+                    </a>
+                    <a 
+                      href={getGoogleStreetViewUrl(selectedLocation.center[0], selectedLocation.center[1])} 
+                      target="_blank" 
+                      rel="noreferrer" 
+                      className="streetview-btn"
+                    >
+                      <Camera size={12} /> Street View
+                    </a>
+                  </div>
+                )}
+              </div>
+            </Popup>
+          </Polygon>
+        )}
+
+        {/* Fallback highlight circle if no polygon geometry is attached */}
+        {selectedLocation && selectedLocation.center && (!selectedLocation.feature || !selectedLocation.feature.geometry) && (
+          <Circle
+            center={selectedLocation.center}
+            radius={80}
+            pathOptions={{
+              color: '#f59e0b',
+              fillColor: '#facc15',
+              fillOpacity: 0.55,
               weight: 3,
               dashArray: '4, 4'
             }}

@@ -302,9 +302,6 @@ export default function ChatbotSorting({ onSelectSearchResult, onSelectLocation,
     if (onSelectSearchResult) {
       onSelectSearchResult(item);
     }
-    if (onSelectLocation && item.center) {
-      onSelectLocation(item.center[0], item.center[1], 17, item.title || 'Lot Terpilih');
-    }
   };
 
   // Reset dialogue to start fresh
