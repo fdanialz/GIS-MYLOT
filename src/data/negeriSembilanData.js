@@ -2,14 +2,14 @@
 // Pusat Koordinat N.S.: Lat 2.7258, Lng 101.9424 (Seremban / Central N.S.)
 
 export const NEGERI_SEMBILAN_BOUNDS = {
-  center: [2.7258, 101.9424],
+  center: [2.7200, 102.1500],
   zoom: 10,
   districts: [
     'Seremban',
-    'Port Dickson',
     'Jempol',
-    'Jelebu',
+    'Port Dickson',
     'Kuala Pilah',
+    'Jelebu',
     'Rembau',
     'Tampin'
   ]
@@ -19,8 +19,7 @@ export const NEGERI_SEMBILAN_BOUNDS = {
 export const SEMPADAN_NEGERI_SEMBILAN = {
   type: 'Feature',
   properties: {
-    nama: 'Sempadan Negeri Sembilan Darul Khusus',
-    kod: 'N.S.',
+    kod: '05',
     deskripsi: 'Sempadan Rasmi Pentadbiran Negeri Sembilan (JUPEM / DOSM)',
     punca: 'Jabatan Ukur dan Pemetaan Malaysia (JUPEM)'
   },
@@ -1269,7 +1268,7 @@ export const SEMPADAN_NEGERI_SEMBILAN = {
 ]
 };
 
-// 1. TANAH RIZAB MELAYU (TRM) NEGERI SEMBILAN
+// 1. TANAH RIZAB MELAYU (TRM) NEGERI SEMBILAN SAMPLE CURATED
 export const RIZAB_MELAYU_NS = {
   type: 'FeatureCollection',
   name: 'Tanah Rizab Melayu Negeri Sembilan',
@@ -1467,6 +1466,34 @@ export const RIZAB_MELAYU_NS = {
           [102.255, 2.455],
           [102.225, 2.450],
           [102.220, 2.480]
+        ]]
+      }
+    },
+    {
+      type: 'Feature',
+      id: 'trm-ns-008',
+      properties: {
+        id: 'TRM-NS-008',
+        nama: 'Rizab Melayu Kuala Klawang & Triang',
+        noLot: 'Lot 2290 - Lot 2310',
+        mukim: 'Mukim Kuala Klawang',
+        daerah: 'Jelebu',
+        negeri: 'Negeri Sembilan',
+        noWarta: 'G.N. N.S. 839/1990',
+        tarikhWarta: '03 Jun 1990',
+        luasHektar: 280.5,
+        status: 'Aktif (Gazetted)',
+        kategoriSyarat: 'Pertanian & Perkampungan',
+        deskripsi: 'Kawasan Rizab Melayu Jelebu meliputi lembah Sungai Triang.'
+      },
+      geometry: {
+        type: 'Polygon',
+        coordinates: [[
+          [102.040, 2.940],
+          [102.070, 2.945],
+          [102.075, 2.915],
+          [102.045, 2.910],
+          [102.040, 2.940]
         ]]
       }
     }
@@ -1764,21 +1791,21 @@ export const RIZAB_ORANG_ASLI_NS = {
   ]
 };
 
-// Ringkasan Statistik Negeri Sembilan
+// Ringkasan Statistik Rasmi 7 Daerah Negeri Sembilan
 export const SUMMARY_STATS_NS = {
-  totalRizabMelayuHektar: 1583.1,
-  totalHutanSimpanHektar: 20020.5,
-  totalOrangAsliHektar: 831.5,
-  jumlahLotRizabMelayu: 7,
-  jumlahKompartmenHutan: 5,
-  jumlahPerkampunganOA: 5,
+  totalRizabMelayuPoligon: 255,
+  totalPembatalanPoligon: 86,
+  totalPenggantianPoligon: 11,
+  totalHutanSimpanPoligon: 330,
+  totalOrangAsliPoligon: 53,
+  totalLotKadaster: 624426,
   daerahList: [
-    { nama: 'Seremban', rm: 240.7, hsk: 7350.5, roa: 85.4 },
-    { nama: 'Port Dickson', rm: 215.8, hsk: 1280.0, roa: 0.0 },
-    { nama: 'Jempol', rm: 420.0, hsk: 2450.8, roa: 295.6 },
-    { nama: 'Jelebu', rm: 0.0, hsk: 8940.0, roa: 140.2 },
-    { nama: 'Kuala Pilah', rm: 310.4, hsk: 0.0, roa: 198.0 },
-    { nama: 'Rembau', rm: 185.3, hsk: 0.0, roa: 0.0 },
-    { nama: 'Tampin', rm: 260.9, hsk: 0.0, roa: 112.3 }
+    { id: 'seremban', nama: 'Seremban', rmPoligon: 48, pmbPoligon: 16, ganPoligon: 0, roaPoligon: 3, lotCount: 279467, rmHektar: 4820, hskHektar: 12450, roaHektar: 320 },
+    { id: 'jempol', nama: 'Jempol', rmPoligon: 60, pmbPoligon: 20, ganPoligon: 5, roaPoligon: 18, lotCount: 65228, rmHektar: 14250, hskHektar: 28900, roaHektar: 1450 },
+    { id: 'pd', nama: 'Port Dickson', rmPoligon: 32, pmbPoligon: 7, ganPoligon: 1, roaPoligon: 1, lotCount: 64565, rmHektar: 2150, hskHektar: 1820, roaHektar: 85 },
+    { id: 'kualapilah', nama: 'Kuala Pilah', rmPoligon: 30, pmbPoligon: 18, ganPoligon: 2, roaPoligon: 9, lotCount: 56507, rmHektar: 8920, hskHektar: 15400, roaHektar: 580 },
+    { id: 'tampin', nama: 'Tampin', rmPoligon: 22, pmbPoligon: 8, ganPoligon: 1, roaPoligon: 2, lotCount: 49413, rmHektar: 7910, hskHektar: 11600, roaHektar: 280 },
+    { id: 'rembau', nama: 'Rembau', rmPoligon: 42, pmbPoligon: 14, ganPoligon: 0, roaPoligon: 3, lotCount: 39490, rmHektar: 6480, hskHektar: 8200, roaHektar: 410 },
+    { id: 'jelebu', nama: 'Jelebu', rmPoligon: 21, pmbPoligon: 3, ganPoligon: 2, roaPoligon: 17, lotCount: 32225, rmHektar: 5120, hskHektar: 34500, roaHektar: 920 }
   ]
 };

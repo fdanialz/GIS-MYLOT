@@ -99,12 +99,25 @@ const MUKIM_BY_DAERAH = {
 const DISTRICT_OPTIONS = [
   { value: 'all', label: 'Semua Daerah' },
   { value: 'seremban', label: 'Seremban' },
-  { value: 'rembau', label: 'Rembau' },
-  { value: 'kuala_pilah', label: 'Kuala Pilah' },
-  { value: 'jelebu', label: 'Jelebu' },
-  { value: 'tampin', label: 'Tampin' },
   { value: 'jempol', label: 'Jempol' },
-  { value: 'pd', label: 'Port Dickson' }
+  { value: 'pd', label: 'Port Dickson' },
+  { value: 'kualapilah', label: 'Kuala Pilah' },
+  { value: 'jelebu', label: 'Jelebu' },
+  { value: 'rembau', label: 'Rembau' },
+  { value: 'tampin', label: 'Tampin' }
+];
+
+const SAMPLE_SEARCHES = [
+  { label: 'PW2163 (Port Dickson)', term: 'PW2163' },
+  { label: 'PW1989 (Orang Asli)', term: 'PW1989' },
+  { label: 'PW1174 (Kuala Pilah)', term: 'PW1174' },
+  { label: 'PW839 (Jelebu)', term: 'PW839' },
+  { label: 'Lot 3481 (Ampangan)', term: 'Lot 3481' },
+  { label: 'Mukim Juasseh', term: 'Juasseh' },
+  { label: 'Mukim Kuala Klawang', term: 'Kuala Klawang' },
+  { label: 'Warta Jempol', term: 'Jempol' },
+  { label: 'Lot Rembau', term: 'Rembau' },
+  { label: 'Lot Tampin', term: 'Tampin' }
 ];
 
 const SECTIONS_LIST = [

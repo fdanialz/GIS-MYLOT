@@ -9,11 +9,15 @@ import {
   ChevronRight, 
   ChevronDown, 
   SlidersHorizontal,
-  Check
+  Check,
+  Globe
 } from 'lucide-react';
 import { 
+  STATEWIDE_LAYERS_CONFIG,
   SEREMBAN_LAYERS_CONFIG, 
   JEMPOL_LAYERS_CONFIG, 
+  KUALAPILAH_LAYERS_CONFIG,
+  JELEBU_LAYERS_CONFIG,
   PD_LAYERS_CONFIG, 
   REMBAU_LAYERS_CONFIG, 
   TAMPIN_LAYERS_CONFIG 
@@ -26,6 +30,8 @@ export default function LayerControl({
   setOpacity,
   serembanStats,
   jempolStats,
+  kualapilahStats,
+  jelebuStats,
   pdStats,
   rembauStats,
   tampinStats,
@@ -52,7 +58,7 @@ export default function LayerControl({
 
   const filterConfigList = (list) => {
     if (activeReserveFilter === 'all') return list;
-    return list.filter(cfg => cfg.reserveType === activeReserveFilter || cfg.id.startsWith('daerah') || cfg.id.startsWith('warta'));
+    return list.filter(cfg => cfg.reserveType === activeReserveFilter || cfg.id.startsWith('daerah') || cfg.id.startsWith('sempadan'));
   };
 
   const renderLegendSwatch = (color, fillColor, type) => {
@@ -111,7 +117,7 @@ export default function LayerControl({
                       type="checkbox" 
                       className="gis-row-checkbox"
                       checked={isChecked} 
-                      onChange={() => {}} // Handled by parent div onClick
+                      onChange={() => {}}
                     />
                   </div>
 
@@ -163,8 +169,20 @@ export default function LayerControl({
     { id: 'seremban', label: 'Seremban' },
     { id: 'jempol', label: 'Jempol' },
     { id: 'pd', label: 'Port Dickson' },
+    { id: 'kualapilah', label: 'Kuala Pilah' },
+    { id: 'jelebu', label: 'Jelebu' },
     { id: 'rembau', label: 'Rembau' },
     { id: 'tampin', label: 'Tampin' }
+  ];
+
+  const districtKeys = [
+    { id: 'daerahSeremban', label: 'Seremban' },
+    { id: 'daerahJempol', label: 'Jempol' },
+    { id: 'daerahPd', label: 'Port Dickson' },
+    { id: 'daerahKualaPilah', label: 'Kuala Pilah' },
+    { id: 'daerahJelebu', label: 'Jelebu' },
+    { id: 'daerahRembau', label: 'Rembau' },
+    { id: 'daerahTampin', label: 'Tampin' }
   ];
 
   return (
@@ -199,7 +217,7 @@ export default function LayerControl({
       <div className="gis-filter-section">
         <div className="gis-filter-label">
           <MapPin size={12} />
-          <span>Tapis Pentadbiran Daerah</span>
+          <span>Tapis Pentadbiran Daerah (7 Daerah)</span>
         </div>
         <div className="gis-segment-control">
           {districtOptions.map(d => (
@@ -265,16 +283,14 @@ export default function LayerControl({
               <div className="gis-row-badge mono">Warta JUPEM</div>
             </div>
 
-            {/* Sempadan Daerah Toggles */}
-            {['seremban', 'jempol', 'pd', 'rembau', 'tampin'].map(dKey => {
-              const cfgId = `daerah${dKey.charAt(0).toUpperCase() + dKey.slice(1)}`;
-              const isChecked = !!layers[cfgId];
-              const dName = dKey === 'pd' ? 'Port Dickson' : dKey.charAt(0).toUpperCase() + dKey.slice(1);
+            {/* Sempadan 7 Daerah Toggles */}
+            {districtKeys.map(d => {
+              const isChecked = !!layers[d.id];
               return (
                 <div 
-                  key={cfgId}
+                  key={d.id}
                   className={`gis-tree-row ${isChecked ? 'active' : ''}`}
-                  onClick={() => toggleLayer(cfgId)}
+                  onClick={() => toggleLayer(d.id)}
                 >
                   <div className="gis-row-checkbox-wrapper">
                     <input 
@@ -284,9 +300,9 @@ export default function LayerControl({
                       onChange={() => {}}
                     />
                   </div>
-                  <span className="gis-legend-swatch district-swatch" title={`Sempadan Pentadbiran Daerah ${dName}`} />
+                  <span className="gis-legend-swatch district-swatch" title={`Sempadan Pentadbiran Daerah ${d.label}`} />
                   <div className="gis-row-label">
-                    <span className="gis-row-name">Sempadan Daerah {dName}</span>
+                    <span className="gis-row-name">Sempadan Daerah {d.label}</span>
                   </div>
                   <div className="gis-row-badge mono">Polygon</div>
                 </div>
@@ -295,11 +311,23 @@ export default function LayerControl({
           </div>
         </div>
 
-        {/* 2. DAERAH SPATIAL DATA GROUPS */}
+        {/* 2. LAPISAN PERINGKAT NEGERI */}
+        <div className="gis-tree-section">
+          <div className="gis-section-header">
+            <Globe size={13} />
+            <span>Lapisan Seluruh Negeri</span>
+          </div>
+          {renderLayerGroup('statewide', 'Rizab Hutan Negeri Sembilan', STATEWIDE_LAYERS_CONFIG, {
+            hutanSimpanNegeri: 35,
+            pembatalanHutanNegeri: 295
+          })}
+        </div>
+
+        {/* 3. 7 DAERAH SPATIAL DATA GROUPS */}
         <div className="gis-tree-section">
           <div className="gis-section-header">
             <Layers size={13} />
-            <span>Kawasan Rizab & Lot Kadaster</span>
+            <span>Kawasan Rizab & Lot Mengikut Daerah</span>
           </div>
 
           {(selectedDaerah === 'all' || selectedDaerah === 'seremban') && (
@@ -312,6 +340,14 @@ export default function LayerControl({
 
           {(selectedDaerah === 'all' || selectedDaerah === 'pd') && (
             renderLayerGroup('pd', 'Daerah Port Dickson', PD_LAYERS_CONFIG, pdStats)
+          )}
+
+          {(selectedDaerah === 'all' || selectedDaerah === 'kualapilah') && (
+            renderLayerGroup('kualapilah', 'Daerah Kuala Pilah', KUALAPILAH_LAYERS_CONFIG, kualapilahStats)
+          )}
+
+          {(selectedDaerah === 'all' || selectedDaerah === 'jelebu') && (
+            renderLayerGroup('jelebu', 'Daerah Jelebu', JELEBU_LAYERS_CONFIG, jelebuStats)
           )}
 
           {(selectedDaerah === 'all' || selectedDaerah === 'rembau') && (

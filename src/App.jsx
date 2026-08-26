@@ -127,64 +127,70 @@ export default function App() {
 
   const serembanStats = {
     daerahSeremban: 1,
-    malayRes: 40,
-    forestRes: 53,
-    aborigineRes: 3,
-    wartaLot: 1772,
-    rizabMelayuLama: 25,
-    pembatalanLama: 16,
-    transitionLot: 7,
-    transitionBdyPolyline: 16921,
-    ndcdbLotRegion: '1,772',
-    ndcdbBdyPolyline: '16,921'
+    malayResSeremban: 48,
+    pembatalanTrmSeremban: 16,
+    aborigineResSeremban: 3,
+    ndcdbLotSeremban: '279,467',
+    relativeLotSeremban: '23,899'
   };
 
   const jempolStats = {
     daerahJempol: 1,
-    malayResJempol: 45,
-    malayResB: 24,
-    forestResJempol: 49,
+    malayResJempol: 60,
+    pembatalanTrmJempol: 20,
+    gantianTrmJempol: 5,
     aborigineResJempol: 18,
-    wartaLotJempol: 955,
-    ndcdbLotJempol: '62,516',
-    pembatalanTrmJempol: 8,
-    trmGantianLama: 5,
-    trmLamaJempol: 4
+    ndcdbLotJempol: '65,228',
+    relativeLotJempol: '2,770'
+  };
+
+  const kualapilahStats = {
+    daerahKualaPilah: 1,
+    malayResKualaPilah: 30,
+    pembatalanTrmKualaPilah: 18,
+    gantianTrmKualaPilah: 2,
+    aborigineResKualaPilah: 9,
+    ndcdbLotKualaPilah: '56,507',
+    relativeLotKualaPilah: '3,829'
+  };
+
+  const jelebuStats = {
+    daerahJelebu: 1,
+    malayResJelebu: 21,
+    pembatalanTrmJelebu: 3,
+    gantianTrmJelebu: 2,
+    aborigineResJelebu: 17,
+    ndcdbLotJelebu: '32,225',
+    relativeLotJelebu: '1,005'
   };
 
   const pdStats = {
     daerahPd: 1,
-    malayResPd: 15,
-    forestResPd: 34,
+    malayResPd: 32,
+    pembatalanTrmPd: 7,
+    gantianTrmPd: 1,
     aborigineResPd: 1,
-    wartaLotPd: 569,
     ndcdbLotPd: '64,565',
-    ndcdbBdyPd: '229,933',
-    pembatalanPd: 7,
-    rizabMelayuLamaPd: 17
+    relativeLotPd: '2,735'
   };
 
   const rembauStats = {
     daerahRembau: 1,
-    malayResRembau: 27,
-    forestResRembau: 34,
+    malayResRembau: 42,
+    pembatalanTrmRembau: 14,
     aborigineResRembau: 3,
-    wartaLotRembau: 331,
     ndcdbLotRembau: '39,490',
-    pembatalanRembau: 14,
-    seksyenRembau: 2
+    relativeLotRembau: '1,154'
   };
 
   const tampinStats = {
     daerahTampin: 1,
-    malayResTampin: 18,
-    forestResTampin: 45,
+    malayResTampin: 22,
+    pembatalanTrmTampin: 8,
+    gantianTrmTampin: 1,
     aborigineResTampin: 2,
-    wartaLotTampin: 622,
     ndcdbLotTampin: '49,413',
-    pembatalanTampin: 8,
-    penggantianTampin: 1,
-    seksyenTampin: 2
+    relativeLotTampin: '2,139'
   };
 
   const handleSelectDaerah = (daerahId) => {
@@ -295,6 +301,8 @@ export default function App() {
                 stats={SUMMARY_STATS_NS}
                 serembanStats={serembanStats}
                 jempolStats={jempolStats}
+                kualapilahStats={kualapilahStats}
+                jelebuStats={jelebuStats}
                 pdStats={pdStats}
                 rembauStats={rembauStats}
                 tampinStats={tampinStats}

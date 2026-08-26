@@ -38,30 +38,44 @@ function MapController({ center, zoom, isSidebarOpen, isFullscreen }) {
 
 // Listener for map click, mousemove, zoom, and bounds events
 function MapEventsHandler({ onMapClick, onCursorMove, onZoomChange, onBoundsChange }) {
+  const onBoundsRef = useRef(onBoundsChange);
+  onBoundsRef.current = onBoundsChange;
+
+  const onCursorRef = useRef(onCursorMove);
+  onCursorRef.current = onCursorMove;
+
+  const onZoomRef = useRef(onZoomChange);
+  onZoomRef.current = onZoomChange;
+
+  const onMapClickRef = useRef(onMapClick);
+  onMapClickRef.current = onMapClick;
+
   const map = useMapEvents({
     click(e) {
-      onMapClick(e.latlng.lat, e.latlng.lng);
+      if (onMapClickRef.current) {
+        onMapClickRef.current(e.latlng.lat, e.latlng.lng);
+      }
     },
     mousemove(e) {
-      if (onCursorMove) {
-        onCursorMove(e.latlng.lat, e.latlng.lng);
+      if (onCursorRef.current) {
+        onCursorRef.current(e.latlng.lat, e.latlng.lng);
       }
     },
     zoomend(e) {
-      if (onZoomChange) onZoomChange(e.target.getZoom());
-      if (onBoundsChange) onBoundsChange(e.target.getBounds());
+      if (onZoomRef.current) onZoomRef.current(e.target.getZoom());
+      if (onBoundsRef.current) onBoundsRef.current(e.target.getBounds());
     },
     moveend(e) {
-      if (onBoundsChange) onBoundsChange(e.target.getBounds());
+      if (onBoundsRef.current) onBoundsRef.current(e.target.getBounds());
     }
   });
 
-  // Initial bounds report
+  // Initial bounds report once on mount
   useEffect(() => {
-    if (onBoundsChange) {
-      onBoundsChange(map.getBounds());
+    if (onBoundsRef.current) {
+      onBoundsRef.current(map.getBounds());
     }
-  }, [map, onBoundsChange]);
+  }, [map]);
 
   return null;
 }

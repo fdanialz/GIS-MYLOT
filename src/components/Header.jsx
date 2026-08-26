@@ -9,6 +9,8 @@ import {
   Waves, 
   Sprout, 
   Mountain, 
+  Compass,
+  Landmark,
   Sun, 
   Moon, 
   SlidersHorizontal, 
@@ -22,7 +24,8 @@ import {
   ShieldCheck,
   LogIn,
   LogOut,
-  UserCheck
+  UserCheck,
+  Download
 } from 'lucide-react';
 import { getVisitorStats, incrementVisitorCount } from '../utils/visitorTracker';
 import AdminLoginModal from './AdminLoginModal';
@@ -90,6 +93,8 @@ export default function Header({
     { id: 'seremban', label: 'Seremban', icon: Building2 },
     { id: 'jempol', label: 'Jempol', icon: Trees },
     { id: 'pd', label: 'Port Dickson', icon: Waves },
+    { id: 'kualapilah', label: 'Kuala Pilah', icon: Landmark },
+    { id: 'jelebu', label: 'Jelebu', icon: Compass },
     { id: 'rembau', label: 'Rembau', icon: Sprout },
     { id: 'tampin', label: 'Tampin', icon: Mountain }
   ];

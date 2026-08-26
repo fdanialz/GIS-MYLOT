@@ -16,12 +16,12 @@ import { searchAllDatasets, fetchDaerahLayerData, ALL_LAYERS_CONFIG } from '../u
 // Districts list matching image 2 panel 2
 const DISTRICT_OPTIONS = [
   { id: 'seremban', name: 'Seremban' },
-  { id: 'rembau', name: 'Rembau' },
-  { id: 'kuala_pilah', name: 'Kuala Pilah' },
-  { id: 'jelebu', name: 'Jelebu' },
-  { id: 'tampin', name: 'Tampin' },
   { id: 'jempol', name: 'Jempol' },
-  { id: 'pd', name: 'Port Dickson' }
+  { id: 'pd', name: 'Port Dickson' },
+  { id: 'kualapilah', name: 'Kuala Pilah' },
+  { id: 'jelebu', name: 'Jelebu' },
+  { id: 'rembau', name: 'Rembau' },
+  { id: 'tampin', name: 'Tampin' }
 ];
 
 // Query types matching image 2 panel 1
@@ -55,13 +55,13 @@ const DISTRICT_SAMPLES = {
     { label: 'Tampin, Lot 622', query: 'Tampin, 622' },
     { label: 'Gemas, Lot 881', query: 'Gemas, 881' }
   ],
-  kuala_pilah: [
-    { label: 'Kuala Pilah, Lot 150', query: 'Kuala Pilah, 150' },
-    { label: 'Johol, Lot 5612', query: 'Johol, 5612' }
+  kualapilah: [
+    { label: 'Kuala Pilah, PW1174', query: 'PW1174' },
+    { label: 'Juasseh, Lot 892', query: 'Juasseh, 892' }
   ],
   jelebu: [
-    { label: 'Jelebu, Lot 310', query: 'Jelebu, 310' },
-    { label: 'Kuala Klawang, Lot 84', query: 'Kuala Klawang, 84' }
+    { label: 'Jelebu, PW1989', query: 'PW1989' },
+    { label: 'Kuala Klawang, Lot 2291', query: 'Kuala Klawang, 2291' }
   ]
 };
 

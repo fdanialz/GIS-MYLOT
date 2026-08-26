@@ -15,6 +15,10 @@ dist-ssr
 *.zip
 *.shp
 *.dbf
+*.shx
+*.prj
+* SHP*
+NEW DATA/
 
 # Editor directories and files
 .vscode/*
